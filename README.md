@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ☯ Feng Shui Designer
+
+AI-powered room harmony analysis. Upload a photo of any room and get instant Feng Shui recommendations based on 35+ verified principles.
+
+## Features
+
+- **Room Analysis** — Upload a photo, get spatial mapping with bounding boxes for doors, windows, and furniture
+- **Command Position** — Evaluates whether key furniture is in the commanding position
+- **Feng Shui Report** — Score (0-100), violations with severity, positive aspects, five element balance, chi flow quality
+- **Feng Shui 101** — Educational page covering core concepts: Chi, Command Position, Five Elements, Bagua Map, Sha Chi, and room-by-room tips
+- **Redesign Prompt** — Auto-generates a prompt for future AI room redesign (ControlNet)
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **AI**: Gemini 2.5 Vision API
+- **UI**: Dark glassmorphism theme with gold/jade accents
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Add your Gemini API key
+echo "GEMINI_API_KEY=your_key_here" > .env.local
+
+# Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to use the app.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Pages
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Route | Description |
+|-------|-------------|
+| `/` | Room analysis — upload & analyze |
+| `/learn` | Feng Shui 101 — core concepts |
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+├── api/analyze/route.js    # Gemini Vision API endpoint
+├── learn/page.js           # Feng Shui 101 educational page
+├── page.js                 # Main analysis page
+├── layout.js               # Root layout with NavBar
+└── globals.css             # Design system & all styles
+components/
+├── NavBar.js               # Shared navigation
+├── ImageUploader.js        # Drag-and-drop image upload
+├── SpatialOverlay.js       # Canvas bounding-box overlay
+└── FengShuiReport.js       # Score + violations display
+lib/
+├── fengshui-rules.js       # 35+ curated Feng Shui rules
+├── fengshui-system-prompt.js # Anti-hallucination system prompt
+└── score-calculator.js     # Weighted score calculation
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
