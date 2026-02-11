@@ -305,6 +305,12 @@ body::before {
   box-shadow: var(--shadow-glow-gold);
 }
 
+.upload-zone:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 4px;
+  border-color: var(--accent-gold);
+}
+
 .upload-zone.drag-active {
   border-color: var(--accent-jade);
   background: rgba(78, 205, 196, 0.08);
