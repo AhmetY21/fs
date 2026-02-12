@@ -1,8 +1,19 @@
 import { GoogleGenAI } from '@google/genai';
 import { buildAnalysisSystemPrompt } from '@/lib/fengshui-system-prompt';
+import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: Rate Limiting ---
+        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        if (!rateLimiter(ip)) {
+            return Response.json(
+                { error: 'Rate limit exceeded. Please try again later.' },
+                { status: 429 }
+            );
+        }
+        // --- END SECURITY ---
+
         const { imageBase64, mimeType } = await request.json();
 
         if (!imageBase64) {
@@ -34,7 +45,8 @@ export async function POST(request) {
 
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey || apiKey === 'your_key_here') {
-            return Response.json({ error: 'GEMINI_API_KEY not configured. Add it to .env.local' }, { status: 500 });
+            // SECURITY: Generic error message to avoid leaking environment details
+            return Response.json({ error: 'Service configuration error' }, { status: 500 });
         }
 
         const ai = new GoogleGenAI({ apiKey });
