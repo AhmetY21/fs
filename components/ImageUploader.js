@@ -71,6 +71,14 @@ export default function ImageUploader({ onImageSelected, disabled }) {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (disabled || preview) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            fileInputRef.current?.click();
+        }
+    };
+
     const handleRemove = (e) => {
         e.stopPropagation();
         setPreview(null);
@@ -86,6 +94,11 @@ export default function ImageUploader({ onImageSelected, disabled }) {
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onClick={handleClick}
+            onKeyDown={handleKeyDown}
+            role={!preview ? "button" : undefined}
+            tabIndex={disabled || preview ? -1 : 0}
+            aria-label={!preview ? "Upload room photo" : undefined}
+            aria-disabled={disabled}
         >
             <input
                 ref={fileInputRef}
