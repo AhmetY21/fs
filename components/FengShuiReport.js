@@ -2,6 +2,14 @@
 
 import { getScoreGrade } from '@/lib/score-calculator';
 
+const SEVERITY_LABELS = {
+    5: 'Critical',
+    4: 'High',
+    3: 'Moderate',
+    2: 'Low',
+    1: 'Minor'
+};
+
 export default function FengShuiReport({ analysis }) {
     if (!analysis) return null;
 
@@ -55,7 +63,12 @@ export default function FengShuiReport({ analysis }) {
                             .map((v, i) => (
                                 <div key={i} className={`violation-card severity-${v.severity}`}>
                                     <div className="violation-header">
-                                        <span className="severity-badge">
+                                        <span
+                                            className="severity-badge"
+                                            role="img"
+                                            aria-label={`Severity: ${SEVERITY_LABELS[v.severity] || 'Unknown'} (${v.severity}/5)`}
+                                            title={`Severity: ${SEVERITY_LABELS[v.severity] || 'Unknown'}`}
+                                        >
                                             {'●'.repeat(v.severity)}{'○'.repeat(5 - v.severity)}
                                         </span>
                                         <span className="rule-id">{v.rule_id}</span>
