@@ -9,6 +9,29 @@ export async function POST(request) {
             return Response.json({ error: 'No image provided' }, { status: 400 });
         }
 
+        // --- SECURITY VALIDATION ---
+        // 1. Validate MIME Type (Allowlist)
+        const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!mimeType || !ALLOWED_MIME_TYPES.includes(mimeType)) {
+            return Response.json(
+                { error: `Invalid file type: ${mimeType}. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}` },
+                { status: 400 }
+            );
+        }
+
+        // 2. Validate Image Size (Max 10MB)
+        // Base64 is ~1.33x binary size. 10MB binary ~= 13.3MB Base64.
+        const MAX_IMAGE_SIZE_MB = 10;
+        const MAX_BASE64_LENGTH = Math.ceil(MAX_IMAGE_SIZE_MB * 1024 * 1024 * 1.34);
+
+        if (imageBase64.length > MAX_BASE64_LENGTH) {
+            return Response.json(
+                { error: `Image too large. Max size is ${MAX_IMAGE_SIZE_MB}MB.` },
+                { status: 400 }
+            );
+        }
+        // --- END SECURITY VALIDATION ---
+
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey || apiKey === 'your_key_here') {
             return Response.json({ error: 'GEMINI_API_KEY not configured. Add it to .env.local' }, { status: 500 });
