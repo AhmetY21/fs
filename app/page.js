@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import ImageUploader from '@/components/ImageUploader';
 import SpatialOverlay from '@/components/SpatialOverlay';
 import FengShuiReport from '@/components/FengShuiReport';
@@ -18,6 +18,15 @@ export default function Home() {
     setError(null);
     setStep('upload');
   }, []);
+
+  // Cleanup object URL when imageData changes or component unmounts
+  useEffect(() => {
+    return () => {
+      if (imageData?.dataUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(imageData.dataUrl);
+      }
+    };
+  }, [imageData]);
 
   const handleAnalyze = async () => {
     if (!imageData) return;
