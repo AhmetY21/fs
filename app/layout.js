@@ -1,5 +1,20 @@
+import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
 import NavBar from '@/components/NavBar';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-body',
+  weight: ['300', '400', '500', '600', '700', '800'],
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-display',
+  weight: ['400', '500', '600', '700', '800'],
+});
 
 export const metadata = {
   title: 'Feng Shui Designer — AI Room Harmony Analysis',
@@ -9,15 +24,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>
+      <body className={`${inter.variable} ${outfit.variable}`}>
         <NavBar />
         {children}
       </body>
