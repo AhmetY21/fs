@@ -91,8 +91,9 @@ export async function POST(request) {
             analysis = JSON.parse(jsonText);
         } catch (parseError) {
             console.error('Failed to parse Gemini response:', text);
+            // SECURITY: Do not leak raw text in error response
             return Response.json(
-                { error: 'Failed to parse analysis response', raw: text },
+                { error: 'Failed to parse analysis response' },
                 { status: 500 }
             );
         }
@@ -101,8 +102,9 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Analysis error:', error);
+        // SECURITY: Return generic error message to client, log details on server
         return Response.json(
-            { error: error.message || 'Analysis failed' },
+            { error: 'Analysis failed' },
             { status: 500 }
         );
     }
