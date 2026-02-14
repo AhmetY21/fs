@@ -10,7 +10,7 @@ if curl -s http://localhost:3000 > /dev/null; then
 else
     echo "Starting Next.js server..."
     # Start in background
-    npm run dev > server.log 2>&1 &
+    pnpm run dev > server.log 2>&1 &
     SERVER_PID=$!
     ALREADY_RUNNING=false
 
