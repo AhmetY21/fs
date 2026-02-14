@@ -6,20 +6,24 @@ export default function ImageUploader({ onImageSelected, disabled }) {
     const [preview, setPreview] = useState(null);
     const [dragActive, setDragActive] = useState(false);
     const [fileName, setFileName] = useState('');
+    const [error, setError] = useState(null);
     const fileInputRef = useRef(null);
 
     const processFile = useCallback((file) => {
+        setError(null);
         if (!file) return;
 
         // Validate type
         if (!file.type.startsWith('image/')) {
-            alert('Please upload an image file (JPEG, PNG, WebP)');
+            setError('Please upload an image file (JPEG, PNG, WebP)');
+            if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
 
         // Validate size (10MB max)
         if (file.size > 10 * 1024 * 1024) {
-            alert('Image must be under 10MB');
+            setError('Image must be under 10MB');
+            if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
 
@@ -53,6 +57,7 @@ export default function ImageUploader({ onImageSelected, disabled }) {
     const handleDragOver = useCallback((e) => {
         e.preventDefault();
         setDragActive(true);
+        setError(null);
     }, []);
 
     const handleDragLeave = useCallback((e) => {
@@ -67,6 +72,7 @@ export default function ImageUploader({ onImageSelected, disabled }) {
 
     const handleClick = () => {
         if (!disabled) {
+            setError(null);
             fileInputRef.current?.click();
         }
     };
@@ -75,6 +81,7 @@ export default function ImageUploader({ onImageSelected, disabled }) {
         if (disabled || preview) return;
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
+            setError(null);
             fileInputRef.current?.click();
         }
     };
@@ -83,6 +90,7 @@ export default function ImageUploader({ onImageSelected, disabled }) {
         e.stopPropagation();
         setPreview(null);
         setFileName('');
+        setError(null);
         onImageSelected(null);
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
@@ -121,6 +129,27 @@ export default function ImageUploader({ onImageSelected, disabled }) {
                 </div>
             ) : (
                 <div className="upload-placeholder">
+                    {error && (
+                        <div
+                            role="alert"
+                            style={{
+                                color: 'var(--accent-red)',
+                                marginBottom: '16px',
+                                padding: '8px 12px',
+                                background: 'rgba(231, 76, 60, 0.1)',
+                                borderRadius: 'var(--radius-sm)',
+                                border: '1px solid rgba(231, 76, 60, 0.3)',
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                maxWidth: '100%'
+                            }}
+                        >
+                            <span style={{ fontSize: '16px' }}>⚠️</span> {error}
+                        </div>
+                    )}
                     <div className="upload-icon">
                         <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
