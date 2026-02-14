@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useId } from 'react';
 
 const ELEMENT_COLORS = {
     door: { fill: 'rgba(76, 175, 80, 0.25)', stroke: '#4caf50', label: '🚪' },
@@ -23,9 +23,30 @@ const ELEMENT_COLORS = {
     other: { fill: 'rgba(189, 189, 189, 0.25)', stroke: '#bdbdbd', label: '📦' },
 };
 
+const getPositionDescription = (x, y) => {
+    const v = y < 0.33 ? 'top' : y > 0.66 ? 'bottom' : 'center';
+    const h = x < 0.33 ? 'left' : x > 0.66 ? 'right' : 'center';
+    if (v === 'center' && h === 'center') return 'center';
+    if (v === 'center') return h;
+    if (h === 'center') return v;
+    return `${v}-${h}`;
+};
+
 export default function SpatialOverlay({ imageUrl, elements, commandPosition }) {
     const canvasRef = useRef(null);
     const containerRef = useRef(null);
+    const descId = useId();
+
+    const description = (elements || []).map(el => {
+        const pos = getPositionDescription(el.position.x, el.position.y);
+        return `${el.label || el.type} at ${pos}`;
+    }).join('. ') + '.';
+
+    const commandDesc = commandPosition
+        ? ` Command position: ${commandPosition.is_commanding ? 'Good' : 'Needs improvement'} (${commandPosition.primary_furniture}).`
+        : '';
+
+    const fullDescription = `Spatial Map: ${elements?.length > 0 ? description : 'No elements detected.'}${commandDesc}`;
 
     useEffect(() => {
         if (!imageUrl || !elements || !canvasRef.current) return;
@@ -114,7 +135,29 @@ export default function SpatialOverlay({ imageUrl, elements, commandPosition }) 
 
     return (
         <div className="spatial-overlay" ref={containerRef}>
-            <canvas ref={canvasRef} className="overlay-canvas" />
+            <div
+                id={descId}
+                style={{
+                    position: 'absolute',
+                    width: '1px',
+                    height: '1px',
+                    padding: '0',
+                    margin: '-1px',
+                    overflow: 'hidden',
+                    clip: 'rect(0, 0, 0, 0)',
+                    whiteSpace: 'nowrap',
+                    border: '0'
+                }}
+            >
+                {fullDescription}
+            </div>
+            <canvas
+                ref={canvasRef}
+                className="overlay-canvas"
+                role="img"
+                aria-label="Room Spatial Map"
+                aria-describedby={descId}
+            />
             <div className="overlay-legend">
                 <h4>Spatial Map</h4>
                 <div className="legend-items">
