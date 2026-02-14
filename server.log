@@ -1,5 +1,5 @@
 
-> fengshui-home@0.1.0 start
+> fengshui-home@0.1.0 start /app
 > next start
 
 ▲ Next.js 16.1.6
@@ -7,4 +7,4 @@
 - Network:       http://192.168.0.2:3000
 
 ✓ Starting...
-✓ Ready in 302ms
+✓ Ready in 328ms
