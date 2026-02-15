@@ -23,6 +23,34 @@ const ELEMENT_COLORS = {
     other: { fill: 'rgba(189, 189, 189, 0.25)', stroke: '#bdbdbd', label: '📦' },
 };
 
+const srOnlyStyle = {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: '0',
+    margin: '-1px',
+    overflow: 'hidden',
+    clip: 'rect(0, 0, 0, 0)',
+    whiteSpace: 'nowrap',
+    borderWidth: '0',
+};
+
+function getPositionDescription(position) {
+    if (!position) return 'unknown position';
+    const { x, y } = position;
+
+    let v = 'center';
+    if (y < 0.33) v = 'top';
+    else if (y > 0.66) v = 'bottom';
+
+    let h = 'center';
+    if (x < 0.33) h = 'left';
+    else if (x > 0.66) h = 'right';
+
+    if (v === 'center' && h === 'center') return 'center';
+    return `${v}-${h}`;
+}
+
 export default function SpatialOverlay({ imageUrl, elements, commandPosition }) {
     const canvasRef = useRef(null);
     const containerRef = useRef(null);
@@ -113,9 +141,29 @@ export default function SpatialOverlay({ imageUrl, elements, commandPosition }) 
     }, [imageUrl, elements, commandPosition]);
 
     return (
-        <div className="spatial-overlay" ref={containerRef}>
-            <canvas ref={canvasRef} className="overlay-canvas" />
-            <div className="overlay-legend">
+        <div className="spatial-overlay" ref={containerRef} role="img" aria-label="Room spatial map showing furniture positions">
+            <canvas ref={canvasRef} className="overlay-canvas" aria-hidden="true" />
+
+            {/* Screen Reader Description */}
+            <div style={srOnlyStyle}>
+                <h3>Spatial Layout</h3>
+                <ul>
+                    {elements?.map((el, i) => {
+                        const isCommanding = commandPosition?.primary_furniture &&
+                            (el.label?.toLowerCase().includes(commandPosition.primary_furniture.toLowerCase()) ||
+                             el.type?.toLowerCase().includes(commandPosition.primary_furniture.toLowerCase()));
+
+                        return (
+                            <li key={i}>
+                                {el.label || el.type} at {getPositionDescription(el.position)}
+                                {isCommanding ? ` (${commandPosition.is_commanding ? 'In Command Position' : 'Not in Command Position'})` : ''}
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+
+            <div className="overlay-legend" aria-hidden="true">
                 <h4>Spatial Map</h4>
                 <div className="legend-items">
                     {elements?.map((el, i) => {
