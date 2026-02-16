@@ -20,6 +20,10 @@ export async function POST(request) {
             return Response.json({ error: 'No image provided' }, { status: 400 });
         }
 
+        if (typeof imageBase64 !== 'string') {
+            return Response.json({ error: 'Invalid image format' }, { status: 400 });
+        }
+
         // --- SECURITY VALIDATION ---
         // 1. Validate MIME Type (Allowlist)
         const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
