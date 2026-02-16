@@ -36,11 +36,14 @@ export default function Home() {
     setStep('analyzing');
 
     try {
+      // Defer base64 conversion until analysis starts to prevent UI blocking during upload
+      const base64 = await fileToBase64(imageData.file);
+
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          imageBase64: imageData.base64,
+          imageBase64: base64,
           mimeType: imageData.mimeType
         })
       });
@@ -185,3 +188,18 @@ export default function Home() {
     </main>
   );
 }
+
+// Utility to convert File to Base64 (deferred execution)
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const result = reader.result;
+      // Extract the base64 string (remove data:image/xxx;base64, prefix)
+      const base64 = result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};
