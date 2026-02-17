@@ -1,10 +1,14 @@
 
-> fengshui-home@0.1.0 start
-> next start
+> fengshui-home@0.1.0 dev
+> next dev
 
-▲ Next.js 16.1.6
+▲ Next.js 16.1.6 (Turbopack)
 - Local:         http://localhost:3000
 - Network:       http://192.168.0.2:3000
 
 ✓ Starting...
-✓ Ready in 302ms
+✓ Ready in 812ms
+○ Compiling / ...
+ GET / 200 in 5.4s (compile: 5.0s, render: 342ms)
+ POST /api/analyze 500 in 2.7s (compile: 2.6s, render: 47ms)
+[?25h
