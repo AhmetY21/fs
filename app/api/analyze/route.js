@@ -1,11 +1,12 @@
 import { GoogleGenAI } from '@google/genai';
 import { buildAnalysisSystemPrompt } from '@/lib/fengshui-system-prompt';
 import { rateLimiter } from '@/lib/rate-limit';
+import { getClientIp } from '@/lib/ip-utils.mjs';
 
 export async function POST(request) {
     try {
         // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        const ip = getClientIp(request);
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
