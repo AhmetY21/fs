@@ -36,13 +36,14 @@ export default function Home() {
     setStep('analyzing');
 
     try {
+      // Use FormData to send file directly (more efficient than base64 JSON)
+      const formData = new FormData();
+      formData.append('image', imageData.file);
+      formData.append('mimeType', imageData.mimeType);
+
       const res = await fetch('/api/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageBase64: imageData.base64,
-          mimeType: imageData.mimeType
-        })
+        body: formData,
       });
 
       const data = await res.json();
