@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import ImageUploader from '@/components/ImageUploader';
 import SpatialOverlay from '@/components/SpatialOverlay';
 import FengShuiReport from '@/components/FengShuiReport';
+import CopyButton from '@/components/CopyButton';
 
 export default function Home() {
   const [imageData, setImageData] = useState(null);
@@ -97,7 +98,7 @@ export default function Home() {
       {error && (
         <div className="error-banner">
           <span>⚠️ {error}</span>
-          <button onClick={() => setError(null)}>✕</button>
+          <button onClick={() => setError(null)} aria-label="Close error message">✕</button>
         </div>
       )}
 
@@ -163,12 +164,7 @@ export default function Home() {
               <h3 className="panel-title">🎨 AI Redesign Prompt</h3>
               <p className="prompt-preview">{analysis.redesign_prompt}</p>
               <div className="prompt-actions">
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => navigator.clipboard.writeText(analysis.redesign_prompt)}
-                >
-                  📋 Copy Prompt
-                </button>
+                <CopyButton text={analysis.redesign_prompt} />
                 <span className="prompt-note">
                   This prompt can be used with ControlNet for AI room redesign (coming soon)
                 </span>
