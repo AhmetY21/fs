@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-02-14 - [Current Page Indicators]
+**Learning:** Visual-only "active" states on navigation links (like color changes) are invisible to screen readers, leaving users lost in the navigation.
+**Action:** Use `aria-current="page"` on the active link to programmatically communicate the current location in the navigation structure.
