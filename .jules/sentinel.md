@@ -1,0 +1,4 @@
+## 2025-02-19 - In-Memory Rate Limiter Memory Exhaustion
+**Vulnerability:** The custom in-memory rate limiter lacked a maximum size limit and used an inefficient cleanup strategy (scanning all entries on every request once a threshold was reached), making the application vulnerable to Denial of Service (DoS) via memory exhaustion and CPU spikes.
+**Learning:** Simple `Map`-based caches without eviction policies are dangerous in serverless or long-running Node.js processes. Trusting `x-forwarded-for` without validation allows attackers to spoof IPs and bypass rate limits, filling memory.
+**Prevention:** Implement strict `MAX_SIZE` limits with LRU (Least Recently Used) eviction for all in-memory caches. Throttle cleanup operations using timestamps (e.g., run at most once per minute) rather than running them on every request.
