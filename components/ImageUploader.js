@@ -122,8 +122,13 @@ export default function ImageUploader({ onImageSelected, disabled }) {
                     <img src={preview} alt="Room preview" className="preview-image" />
                     <div className="preview-overlay">
                         <span className="file-name">{fileName}</span>
-                        <button className="remove-btn" onClick={handleRemove} disabled={disabled}>
-                            ✕ Remove
+                        <button
+                            className="remove-btn"
+                            onClick={handleRemove}
+                            disabled={disabled}
+                            aria-label="Remove selected image"
+                        >
+                            <span aria-hidden="true">✕</span> Remove
                         </button>
                     </div>
                 </div>

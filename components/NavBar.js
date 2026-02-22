@@ -17,10 +17,18 @@ export default function NavBar() {
                     </div>
                 </Link>
                 <nav className="nav-links">
-                    <Link href="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>
+                    <Link
+                        href="/"
+                        className={`nav-link ${pathname === '/' ? 'active' : ''}`}
+                        aria-current={pathname === '/' ? 'page' : undefined}
+                    >
                         Analyze
                     </Link>
-                    <Link href="/learn" className={`nav-link ${pathname === '/learn' ? 'active' : ''}`}>
+                    <Link
+                        href="/learn"
+                        className={`nav-link ${pathname === '/learn' ? 'active' : ''}`}
+                        aria-current={pathname === '/learn' ? 'page' : undefined}
+                    >
                         Feng Shui 101
                     </Link>
                 </nav>
