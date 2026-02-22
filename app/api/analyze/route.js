@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import { GoogleGenAI } from '@google/genai';
 import { buildAnalysisSystemPrompt } from '@/lib/fengshui-system-prompt';
 import { rateLimiter } from '@/lib/rate-limit';
@@ -14,15 +15,18 @@ export async function POST(request) {
         }
         // --- END SECURITY ---
 
-        const { imageBase64, mimeType } = await request.json();
+        const formData = await request.formData();
+        const file = formData.get('file');
 
-        if (!imageBase64) {
+        if (!file) {
             return Response.json({ error: 'No image provided' }, { status: 400 });
         }
 
         // --- SECURITY VALIDATION ---
         // 1. Validate MIME Type (Allowlist)
         const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+        const mimeType = file.type;
+
         if (!mimeType || !ALLOWED_MIME_TYPES.includes(mimeType)) {
             return Response.json(
                 { error: `Invalid file type: ${mimeType}. Allowed: ${ALLOWED_MIME_TYPES.join(', ')}` },
@@ -31,16 +35,19 @@ export async function POST(request) {
         }
 
         // 2. Validate Image Size (Max 10MB)
-        // Base64 is ~1.33x binary size. 10MB binary ~= 13.3MB Base64.
         const MAX_IMAGE_SIZE_MB = 10;
-        const MAX_BASE64_LENGTH = Math.ceil(MAX_IMAGE_SIZE_MB * 1024 * 1024 * 1.34);
 
-        if (imageBase64.length > MAX_BASE64_LENGTH) {
+        if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
             return Response.json(
                 { error: `Image too large. Max size is ${MAX_IMAGE_SIZE_MB}MB.` },
                 { status: 400 }
             );
         }
+
+        // Convert to base64 for Gemini API
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const imageBase64 = buffer.toString('base64');
         // --- END SECURITY VALIDATION ---
 
         const apiKey = process.env.GEMINI_API_KEY;
