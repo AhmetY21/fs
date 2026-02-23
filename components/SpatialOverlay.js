@@ -23,9 +23,24 @@ const ELEMENT_COLORS = {
     other: { fill: 'rgba(189, 189, 189, 0.25)', stroke: '#bdbdbd', label: '📦' },
 };
 
+const getRelativePosition = (x, y) => {
+    const v = y < 0.33 ? 'top' : y > 0.66 ? 'bottom' : 'center';
+    const h = x < 0.33 ? 'left' : x > 0.66 ? 'right' : 'center';
+    if (v === 'center' && h === 'center') return 'center';
+    if (v === 'center') return h;
+    if (h === 'center') return v;
+    return `${v}-${h}`;
+};
+
 export default function SpatialOverlay({ imageUrl, elements, commandPosition }) {
     const canvasRef = useRef(null);
     const containerRef = useRef(null);
+
+    const overlayDescription = elements?.length
+        ? `Spatial map showing: ${elements.map(el =>
+            `${el.label || el.type} at ${getRelativePosition(el.position?.x || 0.5, el.position?.y || 0.5)}`
+        ).join(', ')}.`
+        : 'Spatial map: No elements detected.';
 
     useEffect(() => {
         if (!imageUrl || !elements || !canvasRef.current) return;
@@ -114,7 +129,12 @@ export default function SpatialOverlay({ imageUrl, elements, commandPosition }) 
 
     return (
         <div className="spatial-overlay" ref={containerRef}>
-            <canvas ref={canvasRef} className="overlay-canvas" />
+            <canvas
+                ref={canvasRef}
+                className="overlay-canvas"
+                role="img"
+                aria-label={overlayDescription}
+            />
             <div className="overlay-legend">
                 <h4>Spatial Map</h4>
                 <div className="legend-items">
