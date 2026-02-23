@@ -1,0 +1,4 @@
+## 2025-02-18 - IP Spoofing in Rate Limiting
+**Vulnerability:** Rate limiting relied solely on the first IP in the `x-forwarded-for` header (`request.headers.get('x-forwarded-for').split(',')[0]`). This allowed attackers to bypass rate limits by spoofing the `x-forwarded-for` header, as the application blindly trusted the client-provided value even if a proxy appended the real IP.
+**Learning:** In proxy environments (like Vercel), the `x-forwarded-for` header can contain a chain of IPs. The *first* IP is the client IP if we trust the chain, but if the client injects a header, the proxy appends to it, making the first IP the injected one.
+**Prevention:** Use `request.ip` provided by Next.js, which correctly resolves the client IP based on trusted proxy configuration. Fall back to headers only if `request.ip` is unavailable (e.g., local dev), accepting the risk in dev environments but securing production.
