@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { buildAnalysisSystemPrompt } from '@/lib/fengshui-system-prompt';
 import { rateLimiter } from '@/lib/rate-limit';
+import { Buffer } from 'node:buffer';
 
 export async function POST(request) {
     try {
@@ -14,7 +15,33 @@ export async function POST(request) {
         }
         // --- END SECURITY ---
 
-        const { imageBase64, mimeType } = await request.json();
+        let imageBase64;
+        let mimeType;
+
+        const contentType = request.headers.get('content-type') || '';
+
+        if (contentType.includes('multipart/form-data')) {
+            const formData = await request.formData();
+            const file = formData.get('file');
+
+            if (!file) {
+                return Response.json({ error: 'No image provided' }, { status: 400 });
+            }
+
+            // In FormData, file is a Blob/File object. We need to convert to Base64.
+            if (typeof file === 'object' && typeof file.arrayBuffer === 'function') {
+                const arrayBuffer = await file.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+                imageBase64 = buffer.toString('base64');
+                mimeType = file.type || formData.get('mimeType');
+            } else {
+                 return Response.json({ error: 'Invalid file upload' }, { status: 400 });
+            }
+        } else {
+            const body = await request.json();
+            imageBase64 = body.imageBase64;
+            mimeType = body.mimeType;
+        }
 
         if (!imageBase64) {
             return Response.json({ error: 'No image provided' }, { status: 400 });
