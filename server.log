@@ -1,10 +1,22 @@
 
-> fengshui-home@0.1.0 start
-> next start
+> fengshui-home@0.1.0 dev
+> next dev
 
-▲ Next.js 16.1.6
-- Local:         http://localhost:3000
-- Network:       http://192.168.0.2:3000
+⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.2:3001
 
 ✓ Starting...
-✓ Ready in 302ms
+✓ Ready in 1621ms
+○ Compiling / ...
+ GET / 200 in 6.8s (compile: 6.4s, render: 430ms)
+Persisting failed: Failed to compact database
+
+Caused by:
+    0: Failed to deserialize used key hashes AMQF from 00000015.meta
+    1: extra data at end of input
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+ GET / 200 in 184ms (compile: 70ms, render: 114ms)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
