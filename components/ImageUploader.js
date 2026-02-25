@@ -95,6 +95,14 @@ export default function ImageUploader({ onImageSelected, disabled }) {
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
+    const handleChangeClick = (e) => {
+        e.stopPropagation();
+        if (!disabled) {
+            setError(null);
+            fileInputRef.current?.click();
+        }
+    };
+
     return (
         <div
             className={`upload-zone ${dragActive ? 'drag-active' : ''} ${preview ? 'has-preview' : ''} ${disabled ? 'disabled' : ''}`}
@@ -122,9 +130,27 @@ export default function ImageUploader({ onImageSelected, disabled }) {
                     <img src={preview} alt="Room preview" className="preview-image" />
                     <div className="preview-overlay">
                         <span className="file-name">{fileName}</span>
-                        <button className="remove-btn" onClick={handleRemove} disabled={disabled}>
-                            ✕ Remove
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button
+                                type="button"
+                                className="btn-ghost"
+                                onClick={handleChangeClick}
+                                disabled={disabled}
+                                aria-label="Change image"
+                                style={{ padding: '6px 14px', background: 'rgba(255,255,255,0.1)', color: '#fff', borderColor: 'rgba(255,255,255,0.2)' }}
+                            >
+                                <span aria-hidden="true" style={{ marginRight: '4px' }}>↻</span> Change
+                            </button>
+                            <button
+                                type="button"
+                                className="remove-btn"
+                                onClick={handleRemove}
+                                disabled={disabled}
+                                aria-label="Remove image"
+                            >
+                                <span aria-hidden="true">✕</span> Remove
+                            </button>
+                        </div>
                     </div>
                 </div>
             ) : (
