@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2026-02-25 - [Accessible Image Controls]
+**Learning:** When using overlays for file previews, users expect to be able to change the selection without fully removing it.
+**Action:** Provide a "Change" button alongside "Remove", and ensure all icon-only buttons in overlays have `aria-label` and use `aria-hidden` on the icons.
