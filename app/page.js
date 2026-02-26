@@ -36,11 +36,20 @@ export default function Home() {
     setStep('analyzing');
 
     try {
+      // Convert file to base64 only when needed for analysis
+      // This prevents holding large base64 strings in memory during the preview phase
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(imageData.file);
+      });
+
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          imageBase64: imageData.base64,
+          imageBase64: base64,
           mimeType: imageData.mimeType
         })
       });
