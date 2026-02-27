@@ -4,13 +4,39 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        // --- SECURITY: Rate Limiting & Origin Validation ---
+        // 1. Secure IP Resolution (Prioritize request.ip, fallback to x-forwarded-for)
+        const ip = (request.ip || request.headers.get('x-forwarded-for') || '127.0.0.1').split(',')[0].trim();
+
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
                 { status: 429 }
             );
+        }
+
+        // 2. Origin Validation (CSRF Protection)
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host');
+
+        // If Origin header is present, it MUST match the Host
+        // (Allows server-to-server requests which might lack Origin, but blocks browser-based CSRF)
+        if (origin) {
+            try {
+                const originUrl = new URL(origin);
+                if (originUrl.host !== host) {
+                    return Response.json(
+                        { error: 'Forbidden: Invalid Origin' },
+                        { status: 403 }
+                    );
+                }
+            } catch (e) {
+                // Malformed Origin header
+                return Response.json(
+                    { error: 'Forbidden: Malformed Origin' },
+                    { status: 403 }
+                );
+            }
         }
         // --- END SECURITY ---
 
