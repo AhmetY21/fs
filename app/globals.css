@@ -471,6 +471,16 @@ body::before {
   background: rgba(212, 167, 69, 0.05);
 }
 
+.btn-success {
+  background: var(--accent-jade-dark);
+  color: #fff;
+  border-color: var(--accent-jade);
+}
+
+.btn-success:hover {
+  background: var(--accent-jade);
+}
+
 /* Spinner */
 .spinner {
   width: 18px;
