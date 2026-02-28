@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-02-14 - [Semantic Spatial Data Accessibility]
+**Learning:** Visual spatial representations (like canvas overlays showing detected furniture) are completely invisible to screen readers without an explicit role and label.
+**Action:** When using a `<canvas>` element to display semantic spatial data, always include `role="img"` and a dynamically generated `aria-label` that summarizes the visual contents (e.g., listing detected elements).

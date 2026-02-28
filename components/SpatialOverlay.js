@@ -112,9 +112,18 @@ export default function SpatialOverlay({ imageUrl, elements, commandPosition }) 
         img.src = imageUrl;
     }, [imageUrl, elements, commandPosition]);
 
+    const canvasAriaLabel = elements
+        ? `Spatial map showing ${elements.length} identified elements including: ${elements.map(e => e.label || e.type).join(', ')}`
+        : 'Spatial map loading';
+
     return (
         <div className="spatial-overlay" ref={containerRef}>
-            <canvas ref={canvasRef} className="overlay-canvas" />
+            <canvas
+                ref={canvasRef}
+                className="overlay-canvas"
+                role="img"
+                aria-label={canvasAriaLabel}
+            />
             <div className="overlay-legend">
                 <h4>Spatial Map</h4>
                 <div className="legend-items">
