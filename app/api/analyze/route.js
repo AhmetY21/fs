@@ -5,7 +5,7 @@ import { rateLimiter } from '@/lib/rate-limit';
 export async function POST(request) {
     try {
         // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        const ip = request.ip || (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
@@ -21,7 +21,29 @@ export async function POST(request) {
         }
 
         // --- SECURITY VALIDATION ---
-        // 1. Validate MIME Type (Allowlist)
+        // 1. CSRF Protection (Origin vs Host)
+        const originHeader = request.headers.get('origin');
+        const hostHeader = request.headers.get('host');
+
+        if (originHeader) {
+            try {
+                const originUrl = new URL(originHeader);
+                if (originUrl.host !== hostHeader) {
+                    return Response.json(
+                        { error: 'Invalid origin' },
+                        { status: 403 }
+                    );
+                }
+            } catch (e) {
+                // Invalid origin URL format
+                return Response.json(
+                    { error: 'Invalid origin format' },
+                    { status: 403 }
+                );
+            }
+        }
+
+        // 2. Validate MIME Type (Allowlist)
         const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
         if (!mimeType || !ALLOWED_MIME_TYPES.includes(mimeType)) {
             return Response.json(
