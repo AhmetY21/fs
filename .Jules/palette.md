@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-03-03 - [Transient Feedback for Invisible Actions]
+**Learning:** Copying text to the clipboard is an invisible background action. Without immediate visual and screen-reader feedback, users may repeatedly click or become confused about whether the action succeeded.
+**Action:** Always provide transient visual feedback (e.g., changing button text to "Copied!" for a few seconds) and use `aria-live="polite"` to ensure screen readers announce the success state.
