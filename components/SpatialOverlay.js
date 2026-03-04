@@ -112,9 +112,25 @@ export default function SpatialOverlay({ imageUrl, elements, commandPosition }) 
         img.src = imageUrl;
     }, [imageUrl, elements, commandPosition]);
 
+    const generateAriaLabel = () => {
+        if (!elements || elements.length === 0) return "Spatial map displaying no detected elements";
+        const elementList = elements.map(el => el.label || el.type).join(', ');
+        const commandInfo = commandPosition?.is_commanding
+            ? `The ${commandPosition.primary_furniture} is in a commanding position.`
+            : commandPosition?.primary_furniture
+                ? `The ${commandPosition.primary_furniture} is not in a commanding position.`
+                : '';
+        return `Spatial map showing detected room elements: ${elementList}. ${commandInfo}`;
+    };
+
     return (
         <div className="spatial-overlay" ref={containerRef}>
-            <canvas ref={canvasRef} className="overlay-canvas" />
+            <canvas
+                ref={canvasRef}
+                className="overlay-canvas"
+                aria-label={generateAriaLabel()}
+                role="img"
+            />
             <div className="overlay-legend">
                 <h4>Spatial Map</h4>
                 <div className="legend-items">
