@@ -1,0 +1,214 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Feng Shui",
+  "appSubtitle": "AI Room Analyzer",
+
+  "navAnalyze": "Analyze",
+  "navLearn": "Learn",
+  "navSettings": "Settings",
+
+  "stepUpload": "Upload",
+  "stepAnalyze": "Analyze",
+  "stepReport": "Report",
+
+  "uploadTitle": "Upload Your Room Photo",
+  "uploadSubtitle": "Take a clear photo of your room showing the door position, main furniture, and windows.",
+  "uploadPlaceholder": "Tap to take a photo or choose from gallery",
+  "uploadFormats": "JPEG, PNG, WebP — Max 10 MB",
+  "uploadCamera": "Camera",
+  "uploadGallery": "Gallery",
+  "uploadRemove": "Remove",
+
+  "analyzeButton": "Analyze Feng Shui",
+  "analyzingMessage": "Analyzing with Feng Shui AI...",
+  "newAnalysis": "New Analysis",
+
+  "spatialMapTitle": "Spatial Map",
+  "reportTitle": "Feng Shui Report",
+  "redesignPromptTitle": "AI Redesign Prompt",
+  "copyPrompt": "Copy Prompt",
+  "promptCopied": "Prompt copied to clipboard",
+  "redesignNote": "Use this prompt with AI image generators for room redesign",
+
+  "roomType": "Room Type",
+  "chiFlow": "Chi Flow",
+  "dominantElement": "Dominant Element",
+  "commandPosition": "Command Position",
+  "commandPositionPrimary": "Primary: {furniture}",
+  "@commandPositionPrimary": {
+    "placeholders": {
+      "furniture": { "type": "String" }
+    }
+  },
+  "issuesFound": "Issues Found ({count})",
+  "@issuesFound": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "whatsWorkingWell": "What's Working Well",
+  "fiveElementBalance": "Five Element Balance",
+  "dominant": "Dominant",
+  "missing": "Missing",
+  "suggestion": "Suggestion",
+  "chiFlowAnalysis": "Chi Flow Analysis",
+
+  "severityCritical": "Critical",
+  "severityHigh": "High",
+  "severityModerate": "Moderate",
+  "severityLow": "Low",
+  "severityMinor": "Minor",
+  "severityLabel": "Severity: {label} ({value}/5)",
+  "@severityLabel": {
+    "placeholders": {
+      "label": { "type": "String" },
+      "value": { "type": "int" }
+    }
+  },
+
+  "gradeExcellent": "Excellent",
+  "gradeVeryGood": "Very Good",
+  "gradeGood": "Good",
+  "gradeFair": "Fair",
+  "gradeNeedsWork": "Needs Work",
+  "gradePoor": "Poor",
+  "gradeMajorIssues": "Major Issues",
+
+  "chiExcellent": "Excellent",
+  "chiGood": "Good",
+  "chiModerate": "Moderate",
+  "chiPoor": "Poor",
+  "chiStagnant": "Stagnant",
+
+  "learnTitle": "Feng Shui 101",
+  "learnSubtitle": "The ancient art of creating harmony between you and your environment. Learn the core concepts that power our AI analysis.",
+
+  "learnChiTitle": "Chi — Life Force Energy",
+  "learnChiBadge": "Foundation",
+  "learnChiBody": "Chi is the invisible life-force energy that flows through everything — your body, your home, and the natural world. In Feng Shui, the goal is to allow chi to flow gently and freely through your living spaces, like a meandering stream.",
+  "learnChiGoodTitle": "Good Chi Flow",
+  "learnChiGood1": "Meanders gently through rooms",
+  "learnChiGood2": "Enters through the front door",
+  "learnChiGood3": "Flows around curved furniture",
+  "learnChiGood4": "Pauses in comfortable seating areas",
+  "learnChiGood5": "Exits gently through windows",
+  "learnChiBlockedTitle": "Blocked Chi",
+  "learnChiBlocked1": "Clutter stops energy in corners",
+  "learnChiBlocked2": "Closed doors trap stagnant energy",
+  "learnChiBlocked3": "Dark, unused rooms accumulate negativity",
+  "learnChiBlocked4": "Overfull closets create pressure",
+  "learnChiBlocked5": "Items under the bed disturb sleep",
+  "learnChiShaTitle": "Sha Chi (Killing Energy)",
+  "learnChiSha1": "Long straight hallways accelerate energy",
+  "learnChiSha2": "Sharp corners point poison arrows",
+  "learnChiSha3": "Door directly facing a window — chi rushes through",
+  "learnChiSha4": "Exposed beams press down on people",
+  "learnChiSha5": "Too-fast chi causes anxiety",
+
+  "learnCommandTitle": "The Command Position",
+  "learnCommandBadge": "Most Important Rule",
+  "learnCommandBody": "The Command Position determines where the main piece of furniture in each room should be placed — the bed in a bedroom, the desk in an office, and the stove in a kitchen.",
+  "learnCommandRule1": "See the door — You must have a clear sightline to the entrance.",
+  "learnCommandRule2": "Not in direct line — Don't place furniture directly opposite the door.",
+  "learnCommandRule3": "Solid wall behind — Your back should be supported by a wall, not a window.",
+
+  "learnElementsTitle": "The Five Elements",
+  "learnElementsBadge": "Balance",
+  "learnElementsBody": "Everything in the universe corresponds to one of five elements. A balanced room contains all five. They follow a productive cycle and a destructive cycle.",
+  "learnElementsCycle": "Wood → Fire → Earth → Metal → Water → Wood",
+
+  "elementWood": "Wood",
+  "elementFire": "Fire",
+  "elementEarth": "Earth",
+  "elementMetal": "Metal",
+  "elementWater": "Water",
+  "elementColors": "Colors",
+  "elementShapes": "Shapes",
+  "elementDirection": "Direction",
+  "elementRepresents": "Represents",
+  "elementMaterials": "Materials",
+
+  "woodColors": "Green, Brown",
+  "woodShapes": "Rectangular, Columnar",
+  "woodDirection": "East, Southeast",
+  "woodRepresents": "Growth, Vitality",
+  "woodMaterials": "Plants, Wooden furniture",
+  "fireColors": "Red, Orange, Pink",
+  "fireShapes": "Triangular, Pointed",
+  "fireDirection": "South",
+  "fireRepresents": "Passion, Fame",
+  "fireMaterials": "Candles, Lights",
+  "earthColors": "Yellow, Beige, Terracotta",
+  "earthShapes": "Square, Flat",
+  "earthDirection": "Center, SW, NE",
+  "earthRepresents": "Stability, Nourishment",
+  "earthMaterials": "Ceramics, Stone",
+  "metalColors": "White, Gold, Silver",
+  "metalShapes": "Round, Spherical",
+  "metalDirection": "West, Northwest",
+  "metalRepresents": "Precision, Clarity",
+  "metalMaterials": "Metal, Iron, Brass",
+  "waterColors": "Blue, Black",
+  "waterShapes": "Wavy, Irregular",
+  "waterDirection": "North",
+  "waterRepresents": "Wisdom, Career",
+  "waterMaterials": "Glass, Mirrors, Fountains",
+
+  "learnBaguaTitle": "The Bagua Map",
+  "learnBaguaBadge": "Map",
+  "learnBaguaBody": "The Bagua is an energy map overlaid on your floor plan. It divides your space into 9 life areas, each linked to a specific direction and element.",
+
+  "learnShaChiTitle": "Sha Chi — Poison Arrows",
+  "learnShaChiBadge": "Avoid",
+  "learnShaChiBody": "Sha Chi is aggressive, fast-moving energy caused by sharp angles, long straight lines, and oppressive structures.",
+  "shaPoisonArrows": "Poison Arrows",
+  "shaPoisonArrowsDesc": "Sharp corners of furniture pointing at where you sit or sleep. Fix: angle furniture away or use plants.",
+  "shaCorridors": "Long Corridors",
+  "shaCorridorsDesc": "Narrow hallways act like tunnels, accelerating chi. Fix: add artwork, rugs, or plants along the walls.",
+  "shaBeams": "Exposed Beams",
+  "shaBeamsDesc": "Heavy beams above your bed or desk press down with oppressive energy. Fix: drape fabric or paint them.",
+  "shaMirror": "Mirror Facing Bed",
+  "shaMirrorDesc": "Mirrors bounce energy and can startle you at night. Fix: relocate or cover mirrors at night.",
+
+  "learnRoomTipsTitle": "Room-by-Room Guide",
+  "learnRoomTipsBadge": "Practical",
+  "roomBedroom": "Bedroom",
+  "roomOffice": "Office",
+  "roomLiving": "Living Room",
+  "roomKitchen": "Kitchen",
+  "roomEntrance": "Entrance",
+  "roomBathroom": "Bathroom",
+
+  "readyToAnalyze": "Ready to analyze your space?",
+  "readyToAnalyzeSubtitle": "Upload a photo and get an AI-powered Feng Shui assessment.",
+  "startAnalysis": "Start Analysis",
+
+  "settingsTitle": "Settings",
+  "settingsLanguage": "Language",
+  "settingsAbout": "About",
+  "settingsVersion": "Version {version}",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "settingsRulesCount": "Feng Shui knowledge base with {count}+ verified rules",
+  "@settingsRulesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "settingsPoweredBy": "Powered by Gemini Vision AI",
+
+  "errorGeneric": "Something went wrong. Please try again.",
+  "errorNetwork": "No internet connection. Please check your network.",
+  "errorRateLimit": "Too many requests. Please wait a moment.",
+  "errorInvalidImage": "Invalid image. Please use JPEG, PNG, or WebP.",
+  "errorImageTooLarge": "Image is too large. Maximum size is 10 MB.",
+  "errorAnalysisFailed": "Analysis failed. Please try again.",
+  "retry": "Retry",
+
+  "languageEnglish": "English",
+  "languageTurkish": "Turkish"
+}
