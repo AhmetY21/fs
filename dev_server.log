@@ -1,0 +1,29 @@
+
+> fengshui-home@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+✓ Ready in 904ms
+○ Compiling / ...
+ GET / 200 in 4.6s (compile: 4.3s, render: 320ms)
+○ Compiling /api/analyze ...
+ POST /api/analyze 500 in 5.7s (compile: 5.6s, render: 79ms)
+ GET / 200 in 81ms (compile: 6ms, render: 75ms)
+ POST /api/analyze 500 in 19ms (compile: 11ms, render: 7ms)
+ GET / 200 in 94ms (compile: 6ms, render: 88ms)
+ POST /api/analyze 500 in 18ms (compile: 10ms, render: 8ms)
+ GET / 200 in 58ms (compile: 4ms, render: 54ms)
+ POST /api/analyze 500 in 16ms (compile: 9ms, render: 7ms)
+ GET / 200 in 93ms (compile: 8ms, render: 85ms)
+ POST /api/analyze 500 in 24ms (compile: 12ms, render: 12ms)
+ GET / 200 in 60ms (compile: 4ms, render: 56ms)
+ POST /api/analyze 500 in 31ms (compile: 16ms, render: 14ms)
+ GET / 200 in 97ms (compile: 5ms, render: 91ms)
+ GET / 200 in 57ms (compile: 5ms, render: 52ms)
+ GET / 200 in 57ms (compile: 3ms, render: 54ms)
+ GET / 200 in 56ms (compile: 3ms, render: 53ms)
+ GET / 200 in 57ms (compile: 3ms, render: 53ms)
