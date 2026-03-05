@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import { GoogleGenAI } from '@google/genai';
 import { buildAnalysisSystemPrompt } from '@/lib/fengshui-system-prompt';
 import { rateLimiter } from '@/lib/rate-limit';
@@ -5,7 +6,7 @@ import { rateLimiter } from '@/lib/rate-limit';
 export async function POST(request) {
     try {
         // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        const ip = request.ip || (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
@@ -14,9 +15,11 @@ export async function POST(request) {
         }
         // --- END SECURITY ---
 
-        const { imageBase64, mimeType } = await request.json();
+        const formData = await request.formData();
+        const image = formData.get('image');
+        const mimeType = formData.get('mimeType');
 
-        if (!imageBase64) {
+        if (!image) {
             return Response.json({ error: 'No image provided' }, { status: 400 });
         }
 
@@ -31,17 +34,20 @@ export async function POST(request) {
         }
 
         // 2. Validate Image Size (Max 10MB)
-        // Base64 is ~1.33x binary size. 10MB binary ~= 13.3MB Base64.
         const MAX_IMAGE_SIZE_MB = 10;
-        const MAX_BASE64_LENGTH = Math.ceil(MAX_IMAGE_SIZE_MB * 1024 * 1024 * 1.34);
+        const MAX_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
 
-        if (imageBase64.length > MAX_BASE64_LENGTH) {
+        if (image.size > MAX_SIZE_BYTES) {
             return Response.json(
                 { error: `Image too large. Max size is ${MAX_IMAGE_SIZE_MB}MB.` },
                 { status: 400 }
             );
         }
         // --- END SECURITY VALIDATION ---
+
+        // Convert the File/Blob to Base64 for the Gemini API
+        const arrayBuffer = await image.arrayBuffer();
+        const imageBase64 = Buffer.from(arrayBuffer).toString('base64');
 
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey || apiKey === 'your_key_here') {
