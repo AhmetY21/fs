@@ -1,0 +1,4 @@
+## 2024-05-14 - Fix IP Spoofing and Add CSRF Protection
+**Vulnerability:** Rate limiting could be bypassed via IP spoofing because `x-forwarded-for` header was used exclusively instead of Next.js `request.ip`. Also, the API endpoint was vulnerable to Cross-Site Request Forgery (CSRF) as it lacked Origin validation.
+**Learning:** Next.js App Router API handlers expose `request.ip` securely, which should be the primary method for retrieving client IP, using `x-forwarded-for` only as a fallback. Furthermore, API routes handling sensitive requests must validate the `Origin` against the `Host` header to prevent cross-origin browser requests while permitting server-to-server traffic.
+**Prevention:** Always use `request.ip` before checking `x-forwarded-for` headers. Validate `Origin` headers securely using `new URL(origin)` inside a try-catch block to handle malformed strings and compare the resulting host with the request's `Host` header.
