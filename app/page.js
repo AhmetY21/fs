@@ -89,15 +89,19 @@ export default function Home() {
           </div>
         </div>
         {step === 'result' && (
-          <button className="btn btn-ghost" onClick={handleReset}>← New Analysis</button>
+          <button className="btn btn-ghost" onClick={handleReset}>
+            <span aria-hidden="true">←</span> New Analysis
+          </button>
         )}
       </div>
 
       {/* Error Display */}
       {error && (
-        <div className="error-banner">
-          <span>⚠️ {error}</span>
-          <button onClick={() => setError(null)}>✕</button>
+        <div className="error-banner" role="alert" aria-live="assertive">
+          <span><span aria-hidden="true">⚠️</span> {error}</span>
+          <button onClick={() => setError(null)} aria-label="Dismiss error">
+            <span aria-hidden="true">✕</span>
+          </button>
         </div>
       )}
 
@@ -167,7 +171,7 @@ export default function Home() {
                   className="btn btn-secondary"
                   onClick={() => navigator.clipboard.writeText(analysis.redesign_prompt)}
                 >
-                  📋 Copy Prompt
+                  <span aria-hidden="true">📋</span> Copy Prompt
                 </button>
                 <span className="prompt-note">
                   This prompt can be used with ControlNet for AI room redesign (coming soon)
