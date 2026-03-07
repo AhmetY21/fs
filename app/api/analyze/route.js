@@ -4,8 +4,10 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        // --- SECURITY: Rate Limiting & IP Verification ---
+        // request.ip is provided by Next.js on standard deployments (Vercel, etc.)
+        // x-forwarded-for is a fallback for local development or custom reverse proxies
+        const ip = request.ip ?? (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
