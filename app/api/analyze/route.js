@@ -4,8 +4,35 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        // --- SECURITY: CSRF Protection ---
+        const originHeader = request.headers.get('origin');
+        const hostHeader = request.headers.get('host');
+
+        if (originHeader && hostHeader) {
+            try {
+                const originUrl = new URL(originHeader);
+                if (originUrl.host !== hostHeader) {
+                    return Response.json(
+                        { error: 'Invalid origin.' },
+                        { status: 403 }
+                    );
+                }
+            } catch (e) {
+                // Malformed origin
+                return Response.json(
+                    { error: 'Invalid origin format.' },
+                    { status: 400 }
+                );
+            }
+        }
+        // --- END SECURITY ---
+
+        // --- SECURITY: Rate Limiting & IP Spoofing Prevention ---
+        // Prefer request.ip provided by Next.js, fallback to x-forwarded-for for local dev
+        const forwardedFor = request.headers.get('x-forwarded-for');
+        const fallbackIp = forwardedFor ? forwardedFor.split(',')[0].trim() : '127.0.0.1';
+        const ip = request.ip ?? fallbackIp;
+
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
