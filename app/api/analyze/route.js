@@ -14,9 +14,11 @@ export async function POST(request) {
         }
         // --- END SECURITY ---
 
-        const { imageBase64, mimeType } = await request.json();
+        const formData = await request.formData();
+        const imageFile = formData.get('image');
+        const mimeType = formData.get('mimeType');
 
-        if (!imageBase64) {
+        if (!imageFile) {
             return Response.json({ error: 'No image provided' }, { status: 400 });
         }
 
@@ -31,17 +33,20 @@ export async function POST(request) {
         }
 
         // 2. Validate Image Size (Max 10MB)
-        // Base64 is ~1.33x binary size. 10MB binary ~= 13.3MB Base64.
         const MAX_IMAGE_SIZE_MB = 10;
-        const MAX_BASE64_LENGTH = Math.ceil(MAX_IMAGE_SIZE_MB * 1024 * 1024 * 1.34);
+        const MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
 
-        if (imageBase64.length > MAX_BASE64_LENGTH) {
+        if (imageFile.size > MAX_IMAGE_SIZE_BYTES) {
             return Response.json(
                 { error: `Image too large. Max size is ${MAX_IMAGE_SIZE_MB}MB.` },
                 { status: 400 }
             );
         }
         // --- END SECURITY VALIDATION ---
+
+        // Convert the File object to a base64 string
+        const buffer = await imageFile.arrayBuffer();
+        const imageBase64 = Buffer.from(buffer).toString('base64');
 
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey || apiKey === 'your_key_here') {
