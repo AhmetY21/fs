@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { buildAnalysisSystemPrompt } from '@/lib/fengshui-system-prompt';
-import { rateLimiter } from '@/lib/rate-limit';
+import { rateLimiter } from '@/lib/rate-limit.mjs';
 
 export async function POST(request) {
     try {
