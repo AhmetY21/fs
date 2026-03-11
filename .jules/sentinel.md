@@ -1,0 +1,4 @@
+## 2024-03-12 - Prevent O(N) DoS in Map-based Caches
+**Vulnerability:** A simple in-memory rate limiter using a Map implemented an O(N) cleanup iteration (`for...of`) when its size exceeded 1,000 entries. An attacker could intentionally cycle through distinct IP addresses to constantly trigger the cleanup logic, leading to a Denial of Service via synchronous thread blocking.
+**Learning:** Using generic loops to iterate over cache entries for eviction can easily introduce performance bottlenecks and DoS vectors when caches grow under adversarial load.
+**Prevention:** Always use O(1) Least Recently Used (LRU) eviction strategies for simple Map-based caches. Take advantage of `Map` insertion order preservation: maintain LRU by deleting and re-inserting keys on access, and evict the oldest entry simply via `map.delete(map.keys().next().value)` when a fixed size threshold is reached.
