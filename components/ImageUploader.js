@@ -95,6 +95,14 @@ export default function ImageUploader({ onImageSelected, disabled }) {
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
+    const handleChangeClick = (e) => {
+        e.stopPropagation();
+        if (!disabled) {
+            setError(null);
+            fileInputRef.current?.click();
+        }
+    };
+
     return (
         <div
             className={`upload-zone ${dragActive ? 'drag-active' : ''} ${preview ? 'has-preview' : ''} ${disabled ? 'disabled' : ''}`}
@@ -122,9 +130,19 @@ export default function ImageUploader({ onImageSelected, disabled }) {
                     <img src={preview} alt="Room preview" className="preview-image" />
                     <div className="preview-overlay">
                         <span className="file-name">{fileName}</span>
-                        <button className="remove-btn" onClick={handleRemove} disabled={disabled}>
-                            ✕ Remove
-                        </button>
+                        <div className="button-group">
+                            <button
+                                className="change-btn"
+                                onClick={handleChangeClick}
+                                disabled={disabled}
+                                aria-label="Change photo"
+                            >
+                                ↻ Change
+                            </button>
+                            <button className="remove-btn" onClick={handleRemove} disabled={disabled}>
+                                ✕ Remove
+                            </button>
+                        </div>
                     </div>
                 </div>
             ) : (
