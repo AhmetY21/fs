@@ -11,6 +11,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [step, setStep] = useState('upload'); // upload | analyzing | result
+  const [copied, setCopied] = useState(false);
 
   const handleImageSelected = useCallback((data) => {
     setImageData(data);
@@ -66,6 +67,18 @@ export default function Home() {
     setAnalysis(null);
     setError(null);
     setStep('upload');
+    setCopied(false);
+  };
+
+  const handleCopy = async () => {
+    if (!analysis?.redesign_prompt) return;
+    try {
+      await navigator.clipboard.writeText(analysis.redesign_prompt);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
   };
 
   return (
@@ -95,9 +108,9 @@ export default function Home() {
 
       {/* Error Display */}
       {error && (
-        <div className="error-banner">
+        <div className="error-banner" role="alert" aria-live="assertive">
           <span>⚠️ {error}</span>
-          <button onClick={() => setError(null)}>✕</button>
+          <button onClick={() => setError(null)} aria-label="Dismiss error">✕</button>
         </div>
       )}
 
@@ -165,9 +178,11 @@ export default function Home() {
               <div className="prompt-actions">
                 <button
                   className="btn btn-secondary"
-                  onClick={() => navigator.clipboard.writeText(analysis.redesign_prompt)}
+                  onClick={handleCopy}
+                  aria-live="polite"
+                  aria-label={copied ? "Copied to clipboard!" : "Copy prompt to clipboard"}
                 >
-                  📋 Copy Prompt
+                  {copied ? '✓ Copied!' : '📋 Copy Prompt'}
                 </button>
                 <span className="prompt-note">
                   This prompt can be used with ControlNet for AI room redesign (coming soon)
