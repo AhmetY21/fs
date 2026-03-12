@@ -53,10 +53,10 @@ fi
 # Send 15 requests
 echo "Sending 15 requests to http://localhost:3000/api/analyze..."
 for i in {1..15}; do
-    # Send request with minimal valid JSON structure to pass early checks if rate limit allows
+    # ⚡ Bolt: Use FormData instead of JSON to match updated API
     STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:3000/api/analyze \
-        -H "Content-Type: application/json" \
-        -d '{"imageBase64": "dummy", "mimeType": "image/jpeg"}')
+        -F "image=dummy;type=image/jpeg;filename=dummy.jpg" \
+        -F "mimeType=image/jpeg")
 
     echo "Request $i: $STATUS"
 

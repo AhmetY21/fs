@@ -36,13 +36,15 @@ export default function Home() {
     setStep('analyzing');
 
     try {
+      // ⚡ Bolt: Use FormData for file upload to prevent main thread blocking
+      // caused by JSON stringifying a large base64 string, and to reduce network payload
+      const formData = new FormData();
+      formData.append('image', imageData.file);
+      formData.append('mimeType', imageData.mimeType);
+
       const res = await fetch('/api/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageBase64: imageData.base64,
-          mimeType: imageData.mimeType
-        })
+        body: formData
       });
 
       const data = await res.json();

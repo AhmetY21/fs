@@ -14,9 +14,14 @@ export async function POST(request) {
         }
         // --- END SECURITY ---
 
-        const { imageBase64, mimeType } = await request.json();
+        // ⚡ Bolt: Parse FormData instead of JSON to handle raw file upload
+        // This offloads base64 encoding from the client to the server,
+        // reducing network overhead and preventing client UI freezes.
+        const formData = await request.formData();
+        const imageFile = formData.get('image');
+        const mimeType = formData.get('mimeType');
 
-        if (!imageBase64) {
+        if (!imageFile) {
             return Response.json({ error: 'No image provided' }, { status: 400 });
         }
 
@@ -31,17 +36,21 @@ export async function POST(request) {
         }
 
         // 2. Validate Image Size (Max 10MB)
-        // Base64 is ~1.33x binary size. 10MB binary ~= 13.3MB Base64.
         const MAX_IMAGE_SIZE_MB = 10;
-        const MAX_BASE64_LENGTH = Math.ceil(MAX_IMAGE_SIZE_MB * 1024 * 1024 * 1.34);
+        const MAX_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024;
 
-        if (imageBase64.length > MAX_BASE64_LENGTH) {
+        if (imageFile.size > MAX_BYTES) {
             return Response.json(
                 { error: `Image too large. Max size is ${MAX_IMAGE_SIZE_MB}MB.` },
                 { status: 400 }
             );
         }
         // --- END SECURITY VALIDATION ---
+
+        // ⚡ Bolt: Convert the File directly to an ArrayBuffer, then to Base64
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const imageBase64 = buffer.toString('base64');
 
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey || apiKey === 'your_key_here') {
