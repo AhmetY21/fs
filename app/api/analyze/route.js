@@ -4,6 +4,31 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: CSRF Protection (Origin Validation) ---
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host');
+
+        // Only enforce if both headers are present (prevents bypassing if browser sends them)
+        // Some legitimate clients (e.g. mobile apps, server-to-server) might not send Origin.
+        // We focus on browser-based CSRF protection here.
+        if (origin && host) {
+            try {
+                const originUrl = new URL(origin);
+                // In production, we should probably allow specific trusted domains,
+                // but for now we enforce same-origin policy to prevent cross-site POSTs
+                // If the origin host is not the same as the host header, reject
+                if (originUrl.host !== host) {
+                    console.warn(`CSRF attempt blocked. Origin: ${originUrl.host}, Host: ${host}`);
+                    return Response.json({ error: 'Forbidden' }, { status: 403 });
+                }
+            } catch (e) {
+                // Malformed Origin header
+                console.warn(`Malformed Origin header received: ${origin}`);
+                return Response.json({ error: 'Bad Request' }, { status: 400 });
+            }
+        }
+        // --- END SECURITY ---
+
         // --- SECURITY: Rate Limiting ---
         const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
         if (!rateLimiter(ip)) {

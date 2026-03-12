@@ -1,0 +1,4 @@
+## 2024-05-18 - Missing CSRF Protection in API Route
+**Vulnerability:** The API route `app/api/analyze/route.js` lacked CSRF protection, leaving it vulnerable to unauthorized cross-origin POST requests.
+**Learning:** In Next.js API routes, when validating headers for CSRF protection, safely parse the `Origin` header using `new URL(origin)` within a try-catch block to handle malformed strings before comparing its host to the `Host` header.
+**Prevention:** Implement Origin validation checks early in API routes handling state-changing requests or interacting with external APIs to ensure requests originate from trusted sources.
