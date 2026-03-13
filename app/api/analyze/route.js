@@ -14,6 +14,27 @@ export async function POST(request) {
         }
         // --- END SECURITY ---
 
+        // --- SECURITY: CSRF Protection ---
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host');
+        if (origin && host) {
+            try {
+                const originUrl = new URL(origin);
+                if (originUrl.host !== host) {
+                    return Response.json(
+                        { error: 'Invalid origin.' },
+                        { status: 403 }
+                    );
+                }
+            } catch (e) {
+                return Response.json(
+                    { error: 'Invalid origin header.' },
+                    { status: 403 }
+                );
+            }
+        }
+        // --- END SECURITY ---
+
         const { imageBase64, mimeType } = await request.json();
 
         if (!imageBase64) {

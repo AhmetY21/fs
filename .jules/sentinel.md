@@ -1,0 +1,4 @@
+## 2024-05-14 - Add CSRF Origin Validation to Next.js API Routes
+**Vulnerability:** API routes lacked protection against Cross-Site Request Forgery (CSRF). Malicious sites could potentially forge cross-origin requests to protected endpoints if users were authenticated (though this app relies on rate limiting without auth, defense-in-depth is essential).
+**Learning:** Next.js Route Handlers (App Router) do not have built-in CSRF protection like some frameworks. In endpoints that accept POST data, particularly where we can't strictly enforce CORS or depend on SameSite cookies alone, we must manually validate origins.
+**Prevention:** Implement a check that compares the `Origin` header against the `Host` header (when both are present). Use `new URL(origin)` within a try-catch block to safely parse the origin. Enforce this check only if both headers exist to avoid breaking valid non-browser API clients.
