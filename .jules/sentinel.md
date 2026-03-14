@@ -1,0 +1,4 @@
+## 2024-03-14 - [Next.js API Route CSRF Protection]
+**Vulnerability:** Missing Cross-Site Request Forgery (CSRF) protection on the main `/api/analyze` image upload endpoint, which allowed potential unauthorized execution from malicious sites on behalf of the user.
+**Learning:** Next.js App Router API endpoints (`route.js`) do not have built-in CSRF protection like classic form handlers. For API routes expecting JSON/Blob uploads from the browser, `Origin` and `Host` header validation is a lightweight but effective CSRF defense for browser clients, especially when cookie-based authentication isn't the primary mechanism.
+**Prevention:** In Next.js API routes, implement a check parsing the `Origin` header (using `new URL(origin)`) within a `try-catch` block, and validate that `originUrl.host` strictly matches the `Host` header. Only enforce this if both headers are present to gracefully handle non-browser clients (e.g. CLI tools) that don't send `Origin`.
