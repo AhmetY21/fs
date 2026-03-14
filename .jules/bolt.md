@@ -3,3 +3,7 @@
 ## 2025-02-18 - Font Optimization
 **Learning:** Next.js `next/font` provides a significant performance boost by self-hosting Google Fonts and handling loading strategies automatically. It replaces the need for manual `<link>` tags and CSS `@import`.
 **Action:** Always prefer `next/font` over external font services in Next.js projects. Ensure global CSS variables are updated to use the variables provided by the font loader.
+
+## 2026-03-14 - Pre-calculate static prompt elements
+**Learning:** In serverless API routes (`app/api/analyze/route.js`), functions like `buildAnalysisSystemPrompt` that construct large strings by mapping over static arrays (e.g., `FENG_SHUI_RULES`) incur unnecessary O(N) CPU and garbage collection overhead on every invocation.
+**Action:** Pre-calculate expensive or static string generations at the module level when exporting factory or getter functions to avoid redundant runtime overhead across invocations.
