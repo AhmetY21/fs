@@ -4,6 +4,25 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: CSRF Protection ---
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host');
+
+        // Only validate if both headers exist (browser requests usually send both)
+        if (origin && host) {
+            try {
+                const originUrl = new URL(origin);
+                // Ensure the origin matches the host (ignoring port in this simple check or comparing exact)
+                // For a more robust check, you might want to compare originUrl.host with host
+                if (originUrl.host !== host) {
+                    return Response.json({ error: 'Invalid origin' }, { status: 403 });
+                }
+            } catch (e) {
+                return Response.json({ error: 'Malformed origin header' }, { status: 400 });
+            }
+        }
+        // --- END SECURITY ---
+
         // --- SECURITY: Rate Limiting ---
         const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
         if (!rateLimiter(ip)) {
