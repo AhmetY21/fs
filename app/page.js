@@ -11,6 +11,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [step, setStep] = useState('upload'); // upload | analyzing | result
+  const [copied, setCopied] = useState(false);
 
   const handleImageSelected = useCallback((data) => {
     setImageData(data);
@@ -165,9 +166,15 @@ export default function Home() {
               <div className="prompt-actions">
                 <button
                   className="btn btn-secondary"
-                  onClick={() => navigator.clipboard.writeText(analysis.redesign_prompt)}
+                  onClick={() => {
+                    navigator.clipboard.writeText(analysis.redesign_prompt);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  aria-live="polite"
+                  aria-label={copied ? "Copied to clipboard!" : "Copy prompt to clipboard"}
                 >
-                  📋 Copy Prompt
+                  {copied ? '✅ Copied!' : '📋 Copy Prompt'}
                 </button>
                 <span className="prompt-note">
                   This prompt can be used with ControlNet for AI room redesign (coming soon)
