@@ -12,6 +12,31 @@ export async function POST(request) {
                 { status: 429 }
             );
         }
+
+        // --- SECURITY: CSRF Protection ---
+        // Validate Origin against Host to prevent Cross-Site Request Forgery (CSRF).
+        // Only enforced if both headers exist to gracefully support non-browser clients (like mobile apps).
+        const originHeader = request.headers.get('origin');
+        const hostHeader = request.headers.get('host');
+
+        if (originHeader && hostHeader) {
+            try {
+                const originUrl = new URL(originHeader);
+                if (originUrl.host !== hostHeader) {
+                    console.error(`CSRF validation failed: Origin (${originUrl.host}) !== Host (${hostHeader})`);
+                    return Response.json(
+                        { error: 'Invalid origin' },
+                        { status: 403 }
+                    );
+                }
+            } catch (err) {
+                console.error('CSRF validation error parsing Origin:', err);
+                return Response.json(
+                    { error: 'Invalid origin format' },
+                    { status: 400 }
+                );
+            }
+        }
         // --- END SECURITY ---
 
         const { imageBase64, mimeType } = await request.json();
