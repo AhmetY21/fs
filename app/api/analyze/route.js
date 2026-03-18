@@ -12,6 +12,32 @@ export async function POST(request) {
                 { status: 429 }
             );
         }
+
+        // --- SECURITY: CSRF Protection (Shared Endpoint) ---
+        const originHeader = request.headers.get('origin');
+        const hostHeader = request.headers.get('host');
+
+        // Enforce CSRF checks only for browser-based requests where both headers are present.
+        // Mobile apps (e.g., Flutter Dio client) often omit these.
+        if (originHeader && hostHeader) {
+            try {
+                const originUrl = new URL(originHeader);
+                // Validate that the request's Origin matches the target Host
+                if (originUrl.host !== hostHeader) {
+                    console.warn(`CSRF warning: Origin (${originHeader}) does not match Host (${hostHeader})`);
+                    return Response.json(
+                        { error: 'Invalid request origin' },
+                        { status: 403 }
+                    );
+                }
+            } catch (error) {
+                // Malformed origin header
+                return Response.json(
+                    { error: 'Malformed origin header' },
+                    { status: 400 }
+                );
+            }
+        }
         // --- END SECURITY ---
 
         const { imageBase64, mimeType } = await request.json();
