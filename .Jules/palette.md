@@ -1,7 +1,3 @@
-## 2025-02-12 - [Accessible Severity Indicators]
-**Learning:** Visual-only severity indicators (dots) in Feng Shui report were completely invisible to screen readers, hiding critical information.
-**Action:** Always wrap visual rating/status indicators with `role="img"` and provide descriptive `aria-label` translating the visual count to meaningful text (e.g., "Critical (5/5)").
-
-## 2025-02-13 - [Non-Blocking Validation]
-**Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
-**Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+## 2024-05-14 - Accessible Clipboard Feedback Pattern
+**Learning:** When interacting with `navigator.clipboard`, buttons often lack temporary state feedback (like "Copied!"), which is crucial for accessibility. Relying solely on visual changes is insufficient for screen readers.
+**Action:** Always wrap clipboard interactions in a dedicated client component (e.g., `CopyButton`). Use `aria-live="polite"` and dynamically update the `aria-label` to ensure screen readers reliably announce the state change from "Copy to clipboard" to "Copied to clipboard".
