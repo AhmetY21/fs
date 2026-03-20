@@ -12,6 +12,29 @@ export async function POST(request) {
                 { status: 429 }
             );
         }
+
+        // --- SECURITY: CSRF Protection ---
+        // Validate Origin against Host when both are present.
+        // Bypassed if headers are absent to support non-browser clients (e.g., Flutter app).
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host');
+
+        if (origin && host) {
+            try {
+                const originUrl = new URL(origin);
+                if (originUrl.host !== host) {
+                    return Response.json(
+                        { error: 'Forbidden: CSRF token validation failed' },
+                        { status: 403 }
+                    );
+                }
+            } catch (e) {
+                return Response.json(
+                    { error: 'Forbidden: Invalid Origin header' },
+                    { status: 403 }
+                );
+            }
+        }
         // --- END SECURITY ---
 
         const { imageBase64, mimeType } = await request.json();

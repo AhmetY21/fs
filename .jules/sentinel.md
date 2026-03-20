@@ -1,0 +1,4 @@
+## 2024-05-24 - Conditional CSRF Validation for Shared Web/Mobile Endpoints
+**Vulnerability:** Missing CSRF protection on the Next.js API endpoint (`/api/analyze`) allowed cross-site request forgery attacks.
+**Learning:** Adding standard `Origin` to `Host` validation broke requests coming from the Flutter mobile app, which uses a non-browser HTTP client (`Dio`) and doesn't send these headers by default.
+**Prevention:** Implement conditional validation: Verify `Origin` against `Host` when both headers are present (browser context). Skip validation if headers are absent to support non-browser clients. Use `new URL(origin)` in a try-catch to avoid crashes on malformed URLs.
