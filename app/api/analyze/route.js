@@ -4,6 +4,31 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: CSRF Protection ---
+        // Validate Origin against Host header to protect against CSRF from browser clients
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host');
+
+        // We only enforce this check if both headers are present to gracefully
+        // support non-browser clients (like the Flutter app) which may omit them.
+        if (origin && host) {
+            try {
+                const originUrl = new URL(origin);
+                if (originUrl.host !== host) {
+                    return Response.json(
+                        { error: 'Invalid Origin. Request rejected for security reasons.' },
+                        { status: 403 }
+                    );
+                }
+            } catch (error) {
+                return Response.json(
+                    { error: 'Invalid Origin format.' },
+                    { status: 400 }
+                );
+            }
+        }
+        // --- END CSRF Protection ---
+
         // --- SECURITY: Rate Limiting ---
         const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
         if (!rateLimiter(ip)) {

@@ -1,0 +1,4 @@
+## 2024-05-24 - API CSRF Protection for Shared Endpoints
+**Vulnerability:** Next.js App Router POST endpoints lack default CSRF protection, but strict validation would break legitimate non-browser clients (like the Flutter mobile app) sharing the same API.
+**Learning:** Defense-in-depth CSRF checks (validating `Origin` vs `Host`) in shared endpoints must handle missing headers gracefully.
+**Prevention:** When building security headers validation, conditionally check `origin` and `host` headers to allow programmatic/mobile clients while blocking forged browser requests. Wrap `new URL()` in try-catch to handle malformed origins securely.
