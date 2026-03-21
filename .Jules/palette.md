@@ -5,3 +5,6 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+## 2026-03-21 - Accessible Temporary State Feedback
+**Learning:** Components interacting with browser APIs (like `navigator.clipboard`) that provide temporary visual feedback (e.g., '✓ Copied!') need explicit accessibility support so screen readers announce the state change.
+**Action:** Use `aria-live="polite"` to notify screen readers of content changes smoothly, and dynamically update the `aria-label` alongside the visual text change to ensure accurate readouts.
