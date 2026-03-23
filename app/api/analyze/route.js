@@ -4,6 +4,26 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: CSRF Protection ---
+        // Validate Origin against Host to prevent cross-site request forgery
+        // Bypassed if either header is missing to gracefully support non-browser clients (like Flutter)
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host');
+
+        if (origin && host) {
+            try {
+                const parsedOrigin = new URL(origin);
+                if (parsedOrigin.host !== host) {
+                    console.error(`CSRF validation failed: Origin (${parsedOrigin.host}) does not match Host (${host})`);
+                    return Response.json({ error: 'Forbidden' }, { status: 403 });
+                }
+            } catch (error) {
+                console.error('CSRF validation failed: Invalid Origin URL', error);
+                return Response.json({ error: 'Forbidden' }, { status: 403 });
+            }
+        }
+        // --- END SECURITY: CSRF Protection ---
+
         // --- SECURITY: Rate Limiting ---
         const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
         if (!rateLimiter(ip)) {
