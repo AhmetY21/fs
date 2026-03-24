@@ -171,10 +171,12 @@ class _SpatialPainter extends CustomPainter {
 
     // Command position indicator
     if (commandPosition.primaryFurniture.isNotEmpty) {
+      // PERFORMANCE: Extract static lowercasing outside the loop
+      final target = commandPosition.primaryFurniture.toLowerCase();
+
       final mainEl = elements.where((el) {
         final lowerLabel = el.label.toLowerCase();
         final lowerType = el.type.toLowerCase();
-        final target = commandPosition.primaryFurniture.toLowerCase();
         return lowerLabel.contains(target) || lowerType.contains(target);
       }).firstOrNull;
 
