@@ -12,6 +12,27 @@ export async function POST(request) {
                 { status: 429 }
             );
         }
+
+        // --- SECURITY: CSRF Protection ---
+        // Validate Origin header against Host to prevent Cross-Site Request Forgery.
+        // Bypassed if headers are missing to support non-browser clients (e.g., mobile apps).
+        const origin = request.headers.get('origin');
+        // Handle proxies that might append multiple hosts
+        const hostHeader = request.headers.get('x-forwarded-host') || request.headers.get('host');
+        const host = hostHeader ? hostHeader.split(',')[0].trim() : null;
+
+        if (origin && host) {
+            try {
+                const originUrl = new URL(origin);
+                if (originUrl.host !== host) {
+                    console.error(`CSRF check failed: Origin ${originUrl.host} does not match Host ${host}`);
+                    return Response.json({ error: 'Forbidden' }, { status: 403 });
+                }
+            } catch (e) {
+                console.error('Invalid Origin header format', e);
+                return Response.json({ error: 'Bad Request' }, { status: 400 });
+            }
+        }
         // --- END SECURITY ---
 
         const { imageBase64, mimeType } = await request.json();
