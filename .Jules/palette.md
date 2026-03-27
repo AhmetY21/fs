@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-02-24 - [Transient Feedback States]
+**Learning:** Actions like "Copy to Clipboard" that lack visual confirmation leave users uncertain and prone to repeated clicking.
+**Action:** Implement transient "success" states (e.g., button text change to "Copied!") for immediate, reassuring feedback on invisible actions, using `aria-label` to announce the status change.
