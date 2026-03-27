@@ -36,13 +36,14 @@ export default function Home() {
     setStep('analyzing');
 
     try {
+      const formData = new FormData();
+      formData.append('image', imageData.file);
+      // Explicitly sending mimeType for clarity, though it's on the file object too
+      formData.append('mimeType', imageData.file.type);
+
       const res = await fetch('/api/analyze', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageBase64: imageData.base64,
-          mimeType: imageData.mimeType
-        })
+        body: formData
       });
 
       const data = await res.json();
