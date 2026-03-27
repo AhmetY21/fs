@@ -114,7 +114,12 @@ export default function SpatialOverlay({ imageUrl, elements, commandPosition }) 
 
     return (
         <div className="spatial-overlay" ref={containerRef}>
-            <canvas ref={canvasRef} className="overlay-canvas" />
+            <canvas
+                ref={canvasRef}
+                className="overlay-canvas"
+                aria-label={`Spatial map showing ${elements?.length || 0} recognized room elements`}
+                role="img"
+            />
             <div className="overlay-legend">
                 <h4>Spatial Map</h4>
                 <div className="legend-items">
