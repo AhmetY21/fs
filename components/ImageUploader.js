@@ -95,6 +95,14 @@ export default function ImageUploader({ onImageSelected, disabled }) {
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
+    const handleChangeClick = (e) => {
+        e.stopPropagation();
+        if (!disabled) {
+            setError(null);
+            fileInputRef.current?.click();
+        }
+    };
+
     return (
         <div
             className={`upload-zone ${dragActive ? 'drag-active' : ''} ${preview ? 'has-preview' : ''} ${disabled ? 'disabled' : ''}`}
@@ -122,9 +130,29 @@ export default function ImageUploader({ onImageSelected, disabled }) {
                     <img src={preview} alt="Room preview" className="preview-image" />
                     <div className="preview-overlay">
                         <span className="file-name">{fileName}</span>
-                        <button className="remove-btn" onClick={handleRemove} disabled={disabled}>
-                            ✕ Remove
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button
+                                className="remove-btn"
+                                onClick={handleChangeClick}
+                                disabled={disabled}
+                                aria-label="Change image"
+                                style={{
+                                    background: 'rgba(212, 167, 69, 0.15)',
+                                    color: 'var(--accent-gold)',
+                                    borderColor: 'rgba(212, 167, 69, 0.3)'
+                                }}
+                            >
+                                ↺ Change
+                            </button>
+                            <button
+                                className="remove-btn"
+                                onClick={handleRemove}
+                                disabled={disabled}
+                                aria-label="Remove image"
+                            >
+                                ✕ Remove
+                            </button>
+                        </div>
                     </div>
                 </div>
             ) : (
