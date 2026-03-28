@@ -1,0 +1,4 @@
+## 2024-05-24 - Missing Security Headers in Next.js
+**Vulnerability:** The Next.js application was missing standard HTTP security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy).
+**Learning:** Next.js does not inject these security headers by default. They must be explicitly configured using the `async headers()` function in `next.config.mjs` or `next.config.js`. This is a common pattern in Next.js applications that needs manual configuration.
+**Prevention:** Always add a standard set of security headers to `next.config.mjs` when starting a new Next.js project or reviewing an existing one. Ensure the Content Security Policy allows necessary internal and external domains, taking care with inline scripts and eval based on the project's requirements.
