@@ -87,9 +87,10 @@ export default function SpatialOverlay({ imageUrl, elements, commandPosition }) 
 
             // Draw command position indicator
             if (commandPosition && commandPosition.primary_furniture) {
+                const targetName = commandPosition.primary_furniture.toLowerCase();
                 const mainElement = elements.find(
-                    el => el.label?.toLowerCase().includes(commandPosition.primary_furniture?.toLowerCase()) ||
-                        el.type?.toLowerCase().includes(commandPosition.primary_furniture?.toLowerCase())
+                    el => el.label?.toLowerCase().includes(targetName) ||
+                        el.type?.toLowerCase().includes(targetName)
                 );
                 if (mainElement) {
                     const cx = (mainElement.position.x + mainElement.size.w / 2) * displayWidth;
