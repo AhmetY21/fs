@@ -5,6 +5,15 @@ import ImageUploader from '@/components/ImageUploader';
 import SpatialOverlay from '@/components/SpatialOverlay';
 import FengShuiReport from '@/components/FengShuiReport';
 
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
 export default function Home() {
   const [imageData, setImageData] = useState(null);
   const [analysis, setAnalysis] = useState(null);
@@ -36,11 +45,14 @@ export default function Home() {
     setStep('analyzing');
 
     try {
+      // Convert file to base64 only when needed (just before API call)
+      const base64 = await fileToBase64(imageData.file);
+
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          imageBase64: imageData.base64,
+          imageBase64: base64,
           mimeType: imageData.mimeType
         })
       });
