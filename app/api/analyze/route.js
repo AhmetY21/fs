@@ -4,6 +4,31 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: CSRF Protection ---
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host');
+        const xForwardedHost = request.headers.get('x-forwarded-host');
+
+        if (origin && (host || xForwardedHost)) {
+            try {
+                const originUrl = new URL(origin);
+                const targetHost = xForwardedHost ? xForwardedHost.split(',')[0].trim() : host;
+
+                if (originUrl.host !== targetHost) {
+                    return Response.json(
+                        { error: 'Forbidden: Invalid Origin' },
+                        { status: 403 }
+                    );
+                }
+            } catch (e) {
+                return Response.json(
+                    { error: 'Forbidden: Malformed Origin' },
+                    { status: 403 }
+                );
+            }
+        }
+        // --- END SECURITY ---
+
         // --- SECURITY: Rate Limiting ---
         const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
         if (!rateLimiter(ip)) {
