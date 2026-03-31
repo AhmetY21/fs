@@ -33,18 +33,14 @@ export default function ImageUploader({ onImageSelected, disabled }) {
         const objectUrl = URL.createObjectURL(file);
         setPreview(objectUrl);
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const dataUrl = e.target.result;
-
-            // Extract base64 and mime type
-            const base64 = dataUrl.split(',')[1];
-            const mimeType = file.type;
-
-            // Pass objectUrl as dataUrl to keep DOM lightweight
-            onImageSelected({ base64, mimeType, dataUrl: objectUrl });
-        };
-        reader.readAsDataURL(file);
+        // Optimization: Pass File object directly instead of reading as base64 immediately.
+        // This avoids blocking the main thread with large file reads and reduces memory usage
+        // in the parent component state. Base64 conversion happens only when needed (on Analyze).
+        onImageSelected({
+            file,
+            mimeType: file.type,
+            dataUrl: objectUrl
+        });
     }, [onImageSelected]);
 
     const handleDrop = useCallback((e) => {
