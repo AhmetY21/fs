@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-02-24 - [Isolated Interaction Feedback]
+**Learning:** Implementing temporary visual feedback (like a "Copied!" state with a timeout) directly in a parent page component triggers full-page re-renders, harming performance and accessibility.
+**Action:** Extract temporary interaction feedback logic into isolated Client Components (e.g., `CopyButton`) to localize state changes and ensure timeouts are properly cleared on unmount.
