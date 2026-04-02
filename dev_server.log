@@ -1,0 +1,13 @@
+
+> fengshui-home@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+✓ Ready in 1240ms
+○ Compiling /verify-overlay ...
+ GET /verify-overlay 200 in 4.7s (compile: 4.4s, render: 324ms)
+✓ Compiled in 40ms
