@@ -4,8 +4,36 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: CSRF Protection ---
+        const originHeader = request.headers.get('origin');
+        const hostHeader = request.headers.get('host');
+        const xForwardedHostHeader = request.headers.get('x-forwarded-host');
+
+        // Only enforce CSRF validation if Origin AND (Host OR x-forwarded-host) are present.
+        // This allows non-browser clients (like the Flutter app) to bypass this check.
+        if (originHeader && (hostHeader || xForwardedHostHeader)) {
+            try {
+                const originUrl = new URL(originHeader);
+                const targetHost = xForwardedHostHeader
+                    ? xForwardedHostHeader.split(',')[0].trim()
+                    : hostHeader;
+
+                if (originUrl.host !== targetHost) {
+                    console.error(`CSRF check failed. Origin: ${originUrl.host}, Target: ${targetHost}`);
+                    return Response.json({ error: 'Forbidden' }, { status: 403 });
+                }
+            } catch (e) {
+                console.error('Invalid origin header:', originHeader);
+                return Response.json({ error: 'Forbidden' }, { status: 403 });
+            }
+        }
+        // --- END SECURITY ---
+
         // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        const ip = request.ip ||
+            request.headers.get('x-real-ip') ||
+            (request.headers.get('x-forwarded-for') ? request.headers.get('x-forwarded-for').split(',')[0].trim() : '127.0.0.1');
+
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
