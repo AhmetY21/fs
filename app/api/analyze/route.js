@@ -4,8 +4,46 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: CSRF Protection ---
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host');
+        const forwardedHost = request.headers.get('x-forwarded-host');
+
+        if (origin) {
+            try {
+                const originUrl = new URL(origin);
+                let isValidOrigin = false;
+
+                if (forwardedHost) {
+                     const primaryForwardedHost = forwardedHost.split(',')[0].trim();
+                     isValidOrigin = originUrl.host === primaryForwardedHost;
+                } else if (host) {
+                     isValidOrigin = originUrl.host === host;
+                }
+
+                if (host || forwardedHost) {
+                   if (!isValidOrigin) {
+                        return Response.json(
+                            { error: 'Invalid Origin' },
+                            { status: 403 }
+                        );
+                   }
+                }
+            } catch (e) {
+                return Response.json(
+                    { error: 'Invalid Origin Header' },
+                    { status: 403 }
+                );
+            }
+        }
+        // --- END SECURITY: CSRF Protection ---
+
         // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        const forwardedFor = request.headers.get('x-forwarded-for');
+        const xRealIp = request.headers.get('x-real-ip');
+
+        const ip = request.ip || xRealIp || (forwardedFor ? forwardedFor.split(',')[0].trim() : '127.0.0.1');
+
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
