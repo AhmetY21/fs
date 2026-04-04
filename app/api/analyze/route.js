@@ -4,8 +4,39 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: CSRF Protection ---
+        // Validate Origin to prevent CSRF, but gracefully allow non-browser requests
+        const origin = request.headers.get('origin');
+        const host = request.headers.get('host');
+        const xForwardedHostHeader = request.headers.get('x-forwarded-host');
+
+        // Enforce validation only if the Origin header and either Host or x-forwarded-host headers are present
+        if (origin && (host || xForwardedHostHeader)) {
+            try {
+                const originUrl = new URL(origin);
+                let currentHost = host;
+                if (xForwardedHostHeader) {
+                    // Accurately handle proxy server modifications
+                    currentHost = xForwardedHostHeader.split(',')[0].trim();
+                }
+
+                // Compare origin host with the actual host header
+                if (originUrl.host !== currentHost) {
+                    return Response.json({ error: 'Invalid request origin.' }, { status: 403 });
+                }
+            } catch (err) {
+                return Response.json({ error: 'Malformed origin header.' }, { status: 403 });
+            }
+        }
+
         // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        // Prioritize request.ip and x-real-ip, fallback to the first element in x-forwarded-for
+        let ip = request.ip || request.headers.get('x-real-ip');
+        if (!ip) {
+            const xForwardedFor = request.headers.get('x-forwarded-for');
+            ip = xForwardedFor ? xForwardedFor.split(',')[0].trim() : '127.0.0.1';
+        }
+
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
