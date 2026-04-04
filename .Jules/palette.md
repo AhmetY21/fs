@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-04-04 - [Interaction Feedback for Invisible APIs]
+**Learning:** Browser API actions like `navigator.clipboard.writeText` are invisible to users, leading to repeated clicks and uncertainty without visual confirmation.
+**Action:** Always provide temporary interaction feedback (e.g., active timeouts for "Copied!" states) for invisible background actions. Extract this logic into isolated Client Components to prevent full-page re-renders, ensure timeouts are cleared on unmount, and update `aria-label`s dynamically.
