@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-02-14 - [Interactive Feedback Accessibility]
+**Learning:** Native `navigator.clipboard` actions lacking immediate UI feedback cause confusion, and simply changing text isn't announced properly by screen readers without ARIA live regions.
+**Action:** Extract clipboard actions into isolated Client Components to prevent full-page re-renders, implement self-clearing active timeouts for visual feedback, and use `aria-live="polite"` with dynamic `aria-label`s to ensure state changes are announced.
