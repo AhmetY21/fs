@@ -1,0 +1,4 @@
+## 2025-05-18 - Missing CSRF Protection on API Route
+**Vulnerability:** The `/api/analyze` endpoint lacked CSRF protection, leaving it vulnerable to cross-site request forgery attacks where a malicious site could trick users into making unauthorized analysis requests.
+**Learning:** Next.js App Router API routes do not have built-in CSRF protection for POST requests. Relying solely on CORS is insufficient as simple requests (like POST with plain text or no preflight) can still be sent cross-origin. Furthermore, rate limiting logic heavily depends on reliable IP extraction.
+**Prevention:** Always implement explicit Origin/Referer header validation against the Host header for state-changing API endpoints to verify the request originated from the expected application origin. Also, correctly prioritize IP headers (e.g., `x-real-ip`, `request.ip`) over `x-forwarded-for` to prevent rate limiting bypasses.
