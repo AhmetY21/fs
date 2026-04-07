@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-04-07 - [Isolating Temporary Interaction Feedback]
+**Learning:** Temporary interaction feedback (like 'Copied!' states and timers) mixed in complex page components can cause unnecessary full-page re-renders and potential memory leaks if timeouts are not cleared.
+**Action:** Extract temporary interaction feedback into isolated Next.js Client Components (e.g., `CopyButton`) to contain state changes, prevent full-page re-renders, and ensure reliable cleanup of timers on unmount. Add `aria-live="polite"` for accessible announcements.
