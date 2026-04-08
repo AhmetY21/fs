@@ -1,0 +1,4 @@
+## 2025-02-12 - Fix CSRF and IP extraction vulnerabilities
+**Vulnerability:** Missing CSRF validation on API routes and easily spoofable IP extraction (`x-forwarded-for`).
+**Learning:** `Origin` and `Referer` header validation is necessary to prevent Cross-Site Request Forgery (CSRF). `x-forwarded-for` headers can be easily spoofed, allowing attackers to bypass rate limits or DoS the service if used exclusively. Next.js does not provide these natively for serverless/API routes in app dir out of the box without middleware.
+**Prevention:** Implement strict header validation checking `Origin` or `Referer` against `Host` or `x-forwarded-host`. For IP address extraction, always prioritize non-spoofable attributes like `request.ip` or platform-specific headers (e.g., `x-real-ip` on Vercel) before falling back to `x-forwarded-for`.
