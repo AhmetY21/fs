@@ -4,6 +4,30 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: CSRF Protection ---
+        // Validate Origin/Referer against Host to prevent Cross-Site Request Forgery
+        const origin = request.headers.get('origin');
+        const referer = request.headers.get('referer');
+        const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
+
+        if (origin || referer) {
+            try {
+                const sourceUrl = new URL(origin || referer);
+                if (sourceUrl.host !== host) {
+                    return Response.json(
+                        { error: 'Unauthorized request origin.' },
+                        { status: 403 }
+                    );
+                }
+            } catch (e) {
+                return Response.json(
+                    { error: 'Invalid origin header.' },
+                    { status: 400 }
+                );
+            }
+        }
+        // --- END SECURITY ---
+
         // --- SECURITY: Rate Limiting ---
         const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
         if (!rateLimiter(ip)) {
