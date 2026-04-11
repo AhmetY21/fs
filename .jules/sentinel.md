@@ -1,0 +1,4 @@
+## 2024-04-11 - Add CSRF protection to analyze endpoint
+**Vulnerability:** The API endpoint `app/api/analyze/route.js` lacked Cross-Site Request Forgery (CSRF) protection. Malicious sites could forge requests to this endpoint on behalf of a user without their consent.
+**Learning:** In Next.js API routes, it's crucial to validate the `Origin` and `Referer` headers against the allowed `Host` (or `x-forwarded-host`) to prevent CSRF attacks. Non-browser API clients might omit these headers entirely, so it's a best practice to fail-open when these are missing, but strictly validate them when they are present to defend against unauthorized browser requests.
+**Prevention:** Always implement Origin/Referer checking logic on sensitive, state-changing API endpoints, safely parsing the header with `new URL()` in a try-catch block to handle malformed input.
