@@ -4,8 +4,28 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        // --- SECURITY: Rate Limiting & CSRF ---
+        const origin = request.headers.get('origin');
+        const referer = request.headers.get('referer');
+        const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
+
+        // CSRF Protection: Validate Origin/Referer against Host
+        if (origin || referer) {
+            try {
+                const sourceUrl = new URL(origin || referer);
+                if (sourceUrl.host !== host) {
+                    return Response.json({ error: 'Unauthorized request origin' }, { status: 403 });
+                }
+            } catch (e) {
+                return Response.json({ error: 'Invalid origin or referer' }, { status: 400 });
+            }
+        }
+
+        // IP Extraction: Prevent Spoofing by checking request.ip and x-real-ip first
+        const ip = request.ip ||
+                   request.headers.get('x-real-ip') ||
+                   (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
