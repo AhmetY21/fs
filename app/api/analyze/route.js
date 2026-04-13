@@ -4,6 +4,25 @@ import { rateLimiter } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
+        // --- SECURITY: CSRF Protection ---
+        const origin = request.headers.get('origin') || request.headers.get('referer');
+        const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
+
+        if (origin && host) {
+            try {
+                const originUrl = new URL(origin);
+                const hostName = host.split(':')[0]; // Remove port if present
+                if (originUrl.hostname !== hostName) {
+                    console.warn(`CSRF blocked: Origin ${originUrl.hostname} does not match Host ${hostName}`);
+                    return Response.json({ error: 'Forbidden' }, { status: 403 });
+                }
+            } catch (error) {
+                console.warn('CSRF blocked: Malformed Origin header');
+                return Response.json({ error: 'Bad Request' }, { status: 400 });
+            }
+        }
+        // --- END SECURITY ---
+
         // --- SECURITY: Rate Limiting ---
         const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
         if (!rateLimiter(ip)) {
