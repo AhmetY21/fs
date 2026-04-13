@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-02-14 - [Icon-Only Button Accessibility]
+**Learning:** Icon-only buttons (like a simple '✕' to close an error banner) lack context for screen readers, hiding their purpose.
+**Action:** Always add `aria-label` attributes to icon-only buttons to convey their purpose clearly and make them accessible to all users.

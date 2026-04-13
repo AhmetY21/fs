@@ -97,7 +97,7 @@ export default function Home() {
       {error && (
         <div className="error-banner">
           <span>⚠️ {error}</span>
-          <button onClick={() => setError(null)}>✕</button>
+          <button onClick={() => setError(null)} aria-label="Dismiss error">✕</button>
         </div>
       )}
 
