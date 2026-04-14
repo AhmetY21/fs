@@ -12,6 +12,28 @@ export async function POST(request) {
                 { status: 429 }
             );
         }
+
+        // --- SECURITY: CSRF Protection ---
+        const origin = request.headers.get('origin');
+        const referer = request.headers.get('referer');
+        const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
+
+        if (origin || referer) {
+            try {
+                const sourceUrl = new URL(origin || referer);
+                if (sourceUrl.host !== host) {
+                    return Response.json(
+                        { error: 'Invalid origin or referer' },
+                        { status: 403 }
+                    );
+                }
+            } catch (e) {
+                return Response.json(
+                    { error: 'Malformed origin or referer' },
+                    { status: 400 }
+                );
+            }
+        }
         // --- END SECURITY ---
 
         const { imageBase64, mimeType } = await request.json();
