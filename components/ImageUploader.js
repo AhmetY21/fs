@@ -33,18 +33,9 @@ export default function ImageUploader({ onImageSelected, disabled }) {
         const objectUrl = URL.createObjectURL(file);
         setPreview(objectUrl);
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const dataUrl = e.target.result;
-
-            // Extract base64 and mime type
-            const base64 = dataUrl.split(',')[1];
-            const mimeType = file.type;
-
-            // Pass objectUrl as dataUrl to keep DOM lightweight
-            onImageSelected({ base64, mimeType, dataUrl: objectUrl });
-        };
-        reader.readAsDataURL(file);
+        // Pass objectUrl as dataUrl to keep DOM lightweight
+        // Send raw file object instead of base64
+        onImageSelected({ file, mimeType: file.type, dataUrl: objectUrl });
     }, [onImageSelected]);
 
     const handleDrop = useCallback((e) => {
