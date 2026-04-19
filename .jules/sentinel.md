@@ -1,0 +1,4 @@
+## 2025-03-01 - Prevent Rate Limit Bypass via IP Spoofing
+**Vulnerability:** The rate limiter in `app/api/analyze/route.js` relied primarily on the `x-forwarded-for` header without checking for immutable request IP properties. This allowed trivial rate limit bypass by spoofing the `x-forwarded-for` header in requests.
+**Learning:** Depending solely on client-provided headers like `x-forwarded-for` for security controls like rate limiting is unsafe. Attackers can inject arbitrary IP addresses into this header to evade IP-based restrictions.
+**Prevention:** Always prioritize trusted platform IP properties (like `request.ip`) or headers guaranteed to be set by your ingress/load balancer (like `x-real-ip`). Fallback to `x-forwarded-for` only if absolutely necessary, but prioritize immutable sources.
