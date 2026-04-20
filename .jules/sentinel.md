@@ -1,0 +1,4 @@
+## 2024-04-20 - Prevent Rate Limit Spoofing
+**Vulnerability:** The rate limiting logic in the Next.js API route relied exclusively on the `x-forwarded-for` header without checking primary, platform-provided IP properties. This allowed an attacker to completely bypass the rate limit by simply sending a forged `x-forwarded-for` header with a different IP for each request.
+**Learning:** Next.js and deployment platforms (like Vercel) often provide more secure mechanisms for retrieving the client IP, such as `request.ip` or the `x-real-ip` header, which cannot be as easily spoofed from the client.
+**Prevention:** Always prioritize trusted, platform-provided IP variables (`request.ip`, `x-real-ip`) for rate limiting and security checks. Only fallback to `x-forwarded-for` if the primary properties are missing, taking care to extract the first element since the header can contain a comma-separated list of proxies.
