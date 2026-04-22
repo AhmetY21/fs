@@ -1,0 +1,4 @@
+## 2024-05-18 - [Fix rate limit IP spoofing via X-Forwarded-For]
+**Vulnerability:** The application was extracting the client IP address for rate limiting by solely reading the `x-forwarded-for` header, which is easily spoofable by clients, allowing an attacker to bypass rate limiting completely by sending rotating IPs.
+**Learning:** Relying solely on `x-forwarded-for` without prioritizing non-spoofable platform headers (like Vercel's `request.ip`) or proxy-enforced headers (like `x-real-ip`) creates a vulnerability where rate limits can be trivially circumvented.
+**Prevention:** Always prioritize trusted IP properties (like `request.ip` or `request.socket.remoteAddress`) and verified proxy headers (`x-real-ip`) before falling back to `x-forwarded-for`. When extracting from `x-forwarded-for`, always take the first IP and trim it to avoid format injection.
