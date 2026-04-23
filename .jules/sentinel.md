@@ -1,0 +1,6 @@
+# Sentinel's Journal
+
+## 2025-02-18 - DoS Vulnerability in Custom Rate Limiter
+**Vulnerability:** The custom in-memory rate limiter performed an `O(N)` cleanup operation on the `rateLimit` Map for *every* request once the Map size exceeded 1,000 entries. This allowed an attacker to easily cause a Denial of Service (CPU exhaustion) by sending spoofed requests to build up the map and forcing the server to constantly iterate over the growing Map, significantly degrading response times.
+**Learning:** In-memory maps can cause unbounded iterations. Doing a full map iteration during a hot path (API request handling) creates an algorithmic complexity vulnerability when the map size is controlled by external inputs (e.g., spoofed IPs).
+**Prevention:** Always decouple cleanup routines from the request path where possible. When doing synchronous cleanups, use an interval-based approach (e.g., limit cleanup executions to once per time window) and always implement a hard ceiling/cap on memory structures to prevent Out-Of-Memory (OOM) scenarios.
