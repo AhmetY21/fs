@@ -1,0 +1,4 @@
+## 2024-03-24 - Rate Limit Bypass via X-Forwarded-For Spoofing
+**Vulnerability:** Rate limiting implementation relied on `x-forwarded-for.split(',')[0]` which extracts the leftmost IP. An attacker could trivially bypass rate limits by appending arbitrary fake IP addresses to the start of the `x-forwarded-for` header.
+**Learning:** In a chain of proxies, the leftmost IP in `X-Forwarded-For` is the client IP but is also the easiest to spoof, as standard proxies append to the end. Blindly trusting the first item in a list without validating real IPs or relying on proxy-appended values leaves systems vulnerable to IP spoofing.
+**Prevention:** Rely on framework-provided IPs (like `request.ip`) or strictly use proxy-appended IPs (e.g., `x-real-ip` or the rightmost IP in the `X-Forwarded-For` chain) when deploying behind trusted proxies to ensure the IP extracted is accurate.
