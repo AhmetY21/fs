@@ -5,7 +5,10 @@ import { rateLimiter } from '@/lib/rate-limit';
 export async function POST(request) {
     try {
         // --- SECURITY: Rate Limiting ---
-        const ip = (request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim();
+        // Fix: Rely on x-real-ip if available, otherwise rightmost x-forwarded-for to prevent spoofing bypass
+        const forwardedFor = request.headers.get('x-forwarded-for');
+        const realIp = request.headers.get('x-real-ip');
+        const ip = request.ip || realIp || (forwardedFor ? forwardedFor.split(',').pop().trim() : '127.0.0.1');
         if (!rateLimiter(ip)) {
             return Response.json(
                 { error: 'Rate limit exceeded. Please try again later.' },
