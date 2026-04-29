@@ -1,0 +1,28 @@
+'use client';
+
+import { useState } from 'react';
+
+export default function CopyButton({ textToCopy }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy!', err);
+    }
+  };
+
+  return (
+    <button
+      className="btn btn-secondary"
+      onClick={handleCopy}
+      aria-label={copied ? "Prompt copied to clipboard" : "Copy prompt to clipboard"}
+      aria-live="polite"
+    >
+      {copied ? "✅ Copied!" : "📋 Copy Prompt"}
+    </button>
+  );
+}
