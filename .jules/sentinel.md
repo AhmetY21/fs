@@ -1,0 +1,4 @@
+## 2025-02-26 - Fix IP Spoofing in Rate Limiter
+**Vulnerability:** The rate limiter extracted the client IP using `(request.headers.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0].trim()`. This allowed an attacker to bypass rate limits by sending a spoofed `X-Forwarded-For` header containing a fake IP. The proxy would append the real IP, but the application naively trusted the first (spoofed) IP in the list.
+**Learning:** When evaluating `X-Forwarded-For` for security mechanisms (like rate limiting), never trust the leftmost IP if the header can be user-manipulated. Proxies typically append IPs to the end of the list. The nearest trusted proxy's appended IP is typically the rightmost IP in the sequence.
+**Prevention:** Always use the rightmost IP address in the `X-Forwarded-For` chain (e.g. `split(',').pop()`), or rely on safer attributes like `request.ip` or `x-real-ip` provided by the deployment platform.
