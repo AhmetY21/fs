@@ -1,0 +1,4 @@
+## 2024-05-01 - IP Spoofing Risk in Rate Limiting
+**Vulnerability:** The application was vulnerable to IP spoofing because it trusted the leftmost IP address in the `X-Forwarded-For` header (`.split(',')[0]`) for rate limiting. An attacker could spoof this by sending a crafted `X-Forwarded-For` header (e.g., `X-Forwarded-For: 1.2.3.4, <actual-ip>`), bypassing rate limits entirely.
+**Learning:** In Next.js, the leftmost IP in `X-Forwarded-For` is the client-provided IP and is untrustworthy. The rightmost IP is appended by the closest trusted proxy.
+**Prevention:** Prioritize `request.ip` or `x-real-ip` first. If relying on `X-Forwarded-For`, always use the last IP in the chain (`.split(',').pop()`) to ensure you are rate limiting the actual connecting client/proxy and not a spoofed address.
