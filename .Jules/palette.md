@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-05-03 - [Interactive Copy Feedback]
+**Learning:** Users lack confidence when copying text to the clipboard without visual confirmation, and screen readers are not notified of the state change.
+**Action:** Extract copy actions into isolated components with visual "Copied!" feedback and update `aria-label` with `aria-live="polite"` to provide accessible, non-blocking confirmation.
