@@ -1,0 +1,4 @@
+## 2024-05-03 - IP Spoofing in Rate Limiting
+**Vulnerability:** The rate limiter in `app/api/analyze/route.js` extracted the client IP address using `split(',')[0]` on the `X-Forwarded-For` header. This takes the leftmost IP address. Since the `X-Forwarded-For` header can be freely manipulated by the client, an attacker could spoof the leftmost IP address to bypass rate limits.
+**Learning:** When dealing with proxy chains and the `X-Forwarded-For` header, the leftmost IPs are untrusted as they are provided by the client. Only the rightmost IPs (added by trusted reverse proxies infrastructure) can be verified.
+**Prevention:** Always prioritize extracting the client IP from a trusted source, such as `request.ip`, `x-real-ip`, or by taking the last IP in the `X-Forwarded-For` chain (e.g., `split(',').pop()`) to ensure the IP cannot be trivially spoofed by clients to bypass security mechanisms like rate limiting.
