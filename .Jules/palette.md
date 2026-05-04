@@ -5,3 +5,7 @@
 ## 2025-02-13 - [Non-Blocking Validation]
 **Learning:** Using `window.alert` for file validation disrupts the user flow and is inaccessible to some screen readers.
 **Action:** Use inline, conditional rendering for error messages with `role="alert"` to provide immediate, accessible feedback without blocking the UI.
+
+## 2025-05-04 - [Accessible Interaction Feedback]
+**Learning:** Adding temporary state changes (like "Copied!") in large parent components causes unnecessary full-page re-renders. More importantly, visual-only feedback is missed by screen readers.
+**Action:** Extract interaction feedback buttons into isolated Client Components with their own state. Ensure dynamic text changes are paired with descriptive `aria-label` updates and `aria-live="polite"` to proactively notify assistive technologies without interrupting the user.
