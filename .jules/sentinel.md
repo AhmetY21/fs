@@ -1,0 +1,4 @@
+## 2024-05-04 - Rate Limit IP Spoofing via X-Forwarded-For
+**Vulnerability:** The rate limiter extracted the client IP using `split(',')[0]` from the `X-Forwarded-For` header. Because clients can inject arbitrary values into `X-Forwarded-For`, an attacker could prepend a fake IP address to the header, causing the application to rate-limit the fake IP instead of the attacker's actual IP, effectively bypassing the rate limit protection.
+**Learning:** The leftmost IP in an `X-Forwarded-For` chain is the original client IP as reported by the client itself, and is therefore untrusted. Only the IPs appended by trusted reverse proxies can be trusted.
+**Prevention:** To prevent IP spoofing, prioritize `x-real-ip` or extract the last IP in the `X-Forwarded-For` chain (`split(',').pop()`), as this is the IP that the last trusted reverse proxy observed the connection coming from.
